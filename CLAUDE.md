@@ -5,6 +5,7 @@
 - After every edit, show the diff, or the whole file if new.
 - No batch writes, no parallel file creation.
 - Before any install, download, delete or move, say what and why, then wait.
+- After each completed step, append an entry to `HISTORY.md`: `## YYYY-MM-DD HH:MM — title`, then **Changed** and **Next** lists. Newest at the bottom.
 
 ## Workflow (spec §11)
 - Superpowers: `brainstorming` before design changes, `writing-plans` before multi-step work,
