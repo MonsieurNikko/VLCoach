@@ -1,6 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="420" height="110" viewBox="0 0 420 110" role="img" aria-label="vlcoach">
-  <text x="0" y="80" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="80" font-weight="700" letter-spacing="-3">
-    <tspan fill="#ff4655">vl</tspan><tspan fill="#8b949e">coach</tspan>
-  </text>
-  <circle cx="404" cy="72" r="6" fill="#ff4655"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="120" viewBox="0 0 300 120" role="img" aria-label="VLC">
+  <g fill="none" stroke-width="22" stroke-linecap="square" stroke-linejoin="miter">
+    <polyline points="18,18 60,102 102,18" stroke="#ff4655"/>
+    <polyline points="130,18 130,102 182,102" stroke="#8b949e"/>
+    <path d="M 268 32 A 40 40 0 1 0 268 88" stroke="#8b949e"/>
+  </g>
+  <circle cx="240" cy="60" r="8" fill="#ff4655"/>
 </svg>
