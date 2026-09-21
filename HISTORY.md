@@ -95,3 +95,17 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
 
 **Next**
 - Task 3: `robust_z`, `ewma`, `bootstrap_diff`.
+
+---
+
+## 2026-09-22 01:09 — README, logo, and an iCloud incident
+
+**Changed**
+- `README.md` written: badges, mermaid pipeline, methods table, collapsible setup, access notice, status. Pushed to `main` and `feat/v0.2`.
+- `assets/logo.svg`: first a card-style logo, then replaced by a minimal wordmark at the user's request (`vl` red, `coach` gray, transparent).
+- Incident: `git checkout main` inside the iCloud folder died with `fatal: unable to write new index file` mid-switch. HEAD stayed on `feat/v0.2`, working tree was half `main`. Nothing lost — the commit was already pushed. Recovered with `git checkout -- .` after the lock cleared.
+- Fix: `main` now lives in a git worktree at `D:\vlcoach-main`. This folder never switches branches again. Rule added to `CLAUDE.md`.
+
+**Next**
+- Delete two stray files left by the failed checkout (untracked, asked user).
+- Task 3: `robust_z`, `ewma`, `bootstrap_diff`.
