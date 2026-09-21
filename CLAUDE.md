@@ -29,7 +29,7 @@
   config. On the PC both point to D:.
 - `.git` lives inside iCloud Drive: commit and push from one machine at a time.
 - Never `git checkout` another branch in this folder — the file storm makes iCloud lock `.git/index`.
-  This folder stays on `feat/v0.2`. `main` lives in a worktree at `D:lcoach-main`; cherry-pick there.
+  This folder stays on `feat/v0.2`. `main` lives in a worktree at `D:\vlcoach-main`; cherry-pick there.
 - Line endings are LF everywhere (`.gitattributes`).
 
 ## Language
