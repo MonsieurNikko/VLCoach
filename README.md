@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo.svg" alt="vlcoach" width="360"/>
+<img src="assets/logo.svg" alt="VLC" width="240"/>
 
 ### From your own match history — no invented scores, no hidden uncertainty.
 
