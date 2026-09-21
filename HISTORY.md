@@ -55,3 +55,16 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
 - On approval: `superpowers:writing-plans` produces the implementation plan; old draft plan gets deleted (ask first).
 - Then Phase 0 remainder: Python deps into `.venv`, Ollama upgrade, `ollama pull qwen3:14b`.
 - Then code, one file per step, TDD.
+
+---
+
+## 2026-09-21 20:54 — Pushed to GitHub
+
+**Changed**
+- Branch renamed `master` -> `main`. Remote `origin` = `https://github.com/MonsieurNikko/VLCoach.git`. Both commits pushed, `main` tracks `origin/main`.
+- Git author identity passed per-commit so far. Set `git config --global user.name` and `user.email` on both machines.
+
+**Next**
+- User reviews design spec.
+- `superpowers:writing-plans` on approval.
+- README with bootstrap commands is required by spec §11/§12 — not written yet.
