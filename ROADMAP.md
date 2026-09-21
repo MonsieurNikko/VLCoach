@@ -24,9 +24,9 @@ Legend: `[ ]` todo · `[x]` done · `[~]` in progress
 
 ## Task 1 — Skeleton, config, dependencies
 
-- [ ] `git mv` design doc to `2026-09-21-vlcoach-design.md`; rename `vcoach` → `vlcoach` in it and in `CLAUDE.md`
-- [ ] Append addendum §9 (statistics review) to design doc
-- [ ] `git rm docs/superpowers/plans/001-v0.2-implementation-plan.md`
+- [x] `git mv` design doc to `2026-09-21-vlcoach-design.md`; rename `vcoach` → `vlcoach` in it and in `CLAUDE.md`
+- [x] Append addendum §9 (statistics review) to design doc
+- [x] `git rm docs/superpowers/plans/001-v0.2-implementation-plan.md`
 - [ ] `pyproject.toml`
 - [ ] `uv pip install -e ".[dev]"` — numpy, scipy, scikit-learn, pytest
 - [ ] `tests/test_config.py` — RED
