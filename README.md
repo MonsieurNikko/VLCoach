@@ -1,8 +1,8 @@
 <div align="center">
 
-# 🎯 VLCoach
+<img src="assets/logo.svg" alt="VLCoach" width="640"/>
 
-### Evidence-based Valorant coaching from your own match history — no invented scores, no hidden uncertainty.
+### From your own match history — no invented scores, no hidden uncertainty.
 
 [![Python](https://img.shields.io/badge/Python-3.13-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Status](https://img.shields.io/badge/status-work%20in%20progress-orange?style=for-the-badge)](ROADMAP.md)
@@ -193,5 +193,5 @@ Match-level stats can find patterns, but the strongest coaching questions are ro
 ---
 
 <div align="center">
-<sub>Spec: <a href="SPECIFICATION.md">SPECIFICATION.md</a> · License: not yet chosen</sub>
+<sub>Spec: <a href="SPECIFICATION.md">SPECIFICATION.md</a></sub>
 </div>

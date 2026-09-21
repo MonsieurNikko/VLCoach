@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="220" viewBox="0 0 800 220" role="img" aria-label="VLCoach">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f1923"/>
+      <stop offset="1" stop-color="#16243a"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff4655"/>
+      <stop offset="1" stop-color="#ff8a94"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="220" rx="26" fill="url(#bg)"/>
+  <rect x="1" y="1" width="798" height="218" rx="25" fill="none" stroke="#2a3a52" stroke-width="2"/>
+
+  <!-- crosshair -->
+  <g transform="translate(112,104)" fill="none" stroke="url(#red)" stroke-width="8" stroke-linecap="round">
+    <circle r="42"/>
+    <line x1="0" y1="-68" x2="0" y2="-52"/>
+    <line x1="0" y1="52" x2="0" y2="68"/>
+    <line x1="-68" y1="0" x2="-52" y2="0"/>
+    <line x1="52" y1="0" x2="68" y2="0"/>
+  </g>
+  <circle cx="112" cy="104" r="7" fill="#ff4655"/>
+
+  <!-- confidence-interval bracket -->
+  <g stroke="#7f92ad" stroke-width="3" fill="none" stroke-linecap="round">
+    <line x1="58" y1="186" x2="166" y2="186"/>
+    <line x1="58" y1="179" x2="58" y2="193"/>
+    <line x1="166" y1="179" x2="166" y2="193"/>
+  </g>
+  <circle cx="112" cy="186" r="4.5" fill="#ece8e1"/>
+
+  <!-- wordmark -->
+  <text x="212" y="126" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="92" font-weight="800" letter-spacing="-4">
+    <tspan fill="url(#red)">VL</tspan><tspan fill="#ece8e1">Coach</tspan>
+  </text>
+  <text x="216" y="170" font-family="'JetBrains Mono', Consolas, 'Courier New', monospace" font-size="18" fill="#7f92ad" letter-spacing="3">EVIDENCE-BASED VALORANT COACHING</text>
+</svg>
