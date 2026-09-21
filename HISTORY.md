@@ -83,3 +83,15 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
 
 **Next**
 - Task 2: `stats.py` — Wilson, Jeffreys, shrinkage, TDD.
+
+---
+
+## 2026-09-22 00:54 — Task 2: stats proportions
+
+**Changed**
+- `vlcoach/stats.py`: `wilson` (closed form), `jeffreys` (scipy Beta), `shrink` (pseudo-count, k=10). `LEAKAGE_WARNING` constant.
+- `tests/test_stats.py`: 3 tests. Wilson checked against Newcombe 1998 values.
+- Debugging: first shrink assertion was wrong — it demanded 3-0 rank below 55-45, but spec §7.3 only demands 3-0 not be reported as 100%. Root-caused via systematic-debugging, test corrected to pin the formula value (8/13) and the displacement inequality. Plan file synced.
+
+**Next**
+- Task 3: `robust_z`, `ewma`, `bootstrap_diff`.

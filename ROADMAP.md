@@ -35,9 +35,9 @@ Legend: `[ ]` todo · `[x]` done · `[~]` in progress
 
 ## Task 2 — stats: proportions
 
-- [ ] `tests/test_stats.py` — Wilson vs literature, Jeffreys extremes, shrink inequality — RED
-- [ ] `vlcoach/stats.py` — `wilson`, `jeffreys`, `shrink` — GREEN
-- [ ] `HISTORY.md` entry, commit
+- [x] `tests/test_stats.py` — Wilson vs literature, Jeffreys extremes, shrink inequality — RED
+- [x] `vlcoach/stats.py` — `wilson`, `jeffreys`, `shrink` — GREEN
+- [x] `HISTORY.md` entry, commit
 
 ## Task 3 — stats: per-match series
 
