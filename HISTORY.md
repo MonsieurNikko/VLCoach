@@ -68,3 +68,18 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
 - User reviews design spec.
 - `superpowers:writing-plans` on approval.
 - README with bootstrap commands is required by spec §11/§12 — not written yet.
+
+---
+
+## 2026-09-21 23:40 — Task 1: skeleton, config, dependencies
+
+**Changed**
+- Branch `feat/v0.2` created off `main`.
+- Design doc renamed to `2026-09-21-vlcoach-design.md`, `vcoach` -> `vlcoach` everywhere, addendum §9 added (stats/coaching review). Old draft plan removed. `ROADMAP.md` added with a `CLAUDE.md` rule to tick it.
+- `pyproject.toml`: package `vlcoach`, entry point `vlcoach = vlcoach.cli:main`, Scrapling pinned to git commit `2b160ee`.
+- Installed into `.venv`: numpy 2.5.3, scipy 1.18.1, scikit-learn 1.9.1, pytest 9.1.1.
+- `vlcoach/config.py`: all constants, `FIELDS` bounds table (16 fields incl. `acs_rank_in_team`, `rr_change`), `CONTEXT`, `DIFF_FIELDS`, `riot_id()`.
+- `tests/test_config.py`: 3 tests, RED then GREEN.
+
+**Next**
+- Task 2: `stats.py` — Wilson, Jeffreys, shrinkage, TDD.

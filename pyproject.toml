@@ -1,0 +1,23 @@
+[project]
+name = "vlcoach"
+version = "0.2.0"
+requires-python = ">=3.12"
+dependencies = [
+  "scrapling[fetchers] @ git+https://github.com/D4Vinci/Scrapling.git@2b160ee18bfee79bb0115e2d9e9c746c8d9bf4c9",
+  "numpy",
+  "scipy",
+  "scikit-learn",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+vlcoach = "vlcoach.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["vlcoach*"]
