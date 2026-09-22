@@ -43,6 +43,23 @@ Use the workflow that matches the request:
 
 Before editing, identify the owning module and state the validation command. After editing, run the narrowest relevant check, then review the result from a fresh perspective. When acceptance criteria are ambiguous, ask before changing behavior.
 
+## Minimalism ladder
+
+Before writing code, stop at the first rung that holds:
+
+1. Does this need to exist at all? A speculative need is skipped, and the skip is stated in one line.
+2. Does this repository already have it? Reuse the existing helper, type, or pattern before writing a new one.
+3. Does the standard library do it? Use it.
+4. Does an already-installed dependency do it? Use it, and never add a new dependency for what a few lines cover.
+5. Can it be one line? Then one line. Otherwise the smallest code that works.
+
+Climb the ladder after understanding the change, not instead of understanding it.
+
+- No interface with one implementation, no factory for one product, no configuration for a value that never changes.
+- No scaffolding written for a later that has not arrived.
+- Fix a bug at the root cause every caller routes through, not at the symptom the report names.
+- Mark a deliberate shortcut with a `# ponytail:` comment naming the ceiling it accepts.
+
 ## Agent capability boundary
 
 ECC and Superpowers provide workflows and guidance; they do not replace engineering judgment. Select relevant skills instead of loading every workflow. Claude Code and Codex may invoke native skills, commands, and hooks. Copilot and Antigravity must follow this contract through their project instruction or rule adapters and do not automatically gain every ECC runtime capability.
