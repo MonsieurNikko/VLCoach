@@ -69,6 +69,47 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
 - `superpowers:writing-plans` on approval.
 - README with bootstrap commands is required by spec §11/§12 — not written yet.
 
+## 2026-09-21 23:40 — Task 1: skeleton, config, dependencies
+
+**Changed**
+- Branch `feat/v0.2` created off `main`.
+- Design doc renamed to `2026-09-21-vlcoach-design.md`, `vcoach` -> `vlcoach` everywhere, addendum §9 added (stats/coaching review). Old draft plan removed. `ROADMAP.md` added with a `CLAUDE.md` rule to tick it.
+- `pyproject.toml`: package `vlcoach`, entry point `vlcoach = vlcoach.cli:main`, Scrapling pinned to git commit `2b160ee`.
+- Installed into `.venv`: numpy 2.5.3, scipy 1.18.1, scikit-learn 1.9.1, pytest 9.1.1.
+- `vlcoach/config.py`: all constants, `FIELDS` bounds table (16 fields incl. `acs_rank_in_team`, `rr_change`), `CONTEXT`, `DIFF_FIELDS`, `riot_id()`.
+- `tests/test_config.py`: 3 tests, RED then GREEN.
+
+**Next**
+- Task 2: `stats.py` — Wilson, Jeffreys, shrinkage, TDD.
+
+---
+
+## 2026-09-22 00:54 — Task 2: stats proportions
+
+**Changed**
+- `vlcoach/stats.py`: `wilson` (closed form), `jeffreys` (scipy Beta), `shrink` (pseudo-count, k=10). `LEAKAGE_WARNING` constant.
+- `tests/test_stats.py`: 3 tests. Wilson checked against Newcombe 1998 values.
+- Debugging: first shrink assertion was wrong — it demanded 3-0 rank below 55-45, but spec §7.3 only demands 3-0 not be reported as 100%. Root-caused via systematic-debugging, test corrected to pin the formula value (8/13) and the displacement inequality. Plan file synced.
+
+**Next**
+- Task 3: `robust_z`, `ewma`, `bootstrap_diff`.
+
+---
+
+## 2026-09-22 01:09 — README, logo, and an iCloud incident
+
+**Changed**
+- `README.md` written: badges, mermaid pipeline, methods table, collapsible setup, access notice, status. Pushed to `main` and `feat/v0.2`.
+- `assets/logo.svg`: first a card-style logo, then replaced by a minimal wordmark at the user's request (`vl` red, `coach` gray, transparent).
+- Incident: `git checkout main` inside the iCloud folder died with `fatal: unable to write new index file` mid-switch. HEAD stayed on `feat/v0.2`, working tree was half `main`. Nothing lost — the commit was already pushed. Recovered with `git checkout -- .` after the lock cleared.
+- Fix: `main` now lives in a git worktree at `D:\vlcoach-main`. This folder never switches branches again. Rule added to `CLAUDE.md`.
+
+**Next**
+- Delete two stray files left by the failed checkout (untracked, asked user).
+- Task 3: `robust_z`, `ewma`, `bootstrap_diff`.
+
+---
+
 ## 2026-09-22 13:50 — Agent tooling configured
 
 **Changed**

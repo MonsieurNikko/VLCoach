@@ -1,4 +1,4 @@
-# vcoach — technical design
+# vlcoach — technical design
 
 Date: 2026-09-21
 Requirements: `SPECIFICATION.md` (v0.2). This document is the technical design that satisfies it.
@@ -19,7 +19,7 @@ Status: approved section by section in brainstorming; implementation plan follow
 ## 2. Modules
 
 ```
-vcoach/
+vlcoach/
   cli.py       argparse. Subcommands run|collect|analyze|coach. Flags --matches --model --headed --lang.
                Calls the other modules in order. No logic of its own.
   config.py    Constants only: K=10, ALPHA=0.20, N_BOOT=2000, SEED=42, OLLAMA_URL,
@@ -66,7 +66,7 @@ coach.ask_ollama  --> data/analysis/<stem>_coach.md
    +- None --> coach.fallback --> same file
 ```
 
-Each stage reads only the previous stage's file, so `vcoach analyze` and `vcoach coach` rerun without re-scraping. Raw JSON keeps every value as the string the page showed; cleaning is the only place typing happens. A parser change never needs a re-crawl and a cleaning bug never needs a re-parse.
+Each stage reads only the previous stage's file, so `vlcoach analyze` and `vlcoach coach` rerun without re-scraping. Raw JSON keeps every value as the string the page showed; cleaning is the only place typing happens. A parser change never needs a re-crawl and a cleaning bug never needs a re-parse.
 
 Analysis JSON shape, fixed because both `coach.py` paths read it:
 
@@ -153,3 +153,15 @@ Fixtures are real page snapshots captured once by hand, git-ignored. `fetch_all`
 - Project root is an iCloud Drive sync root shared between a Windows PC and a Mac. `.venv` (PC) and `.venv-mac` (Mac) are both git-ignored; each machine uses only its own. `.git` is inside iCloud: commit and push from one machine at a time.
 - `PLAYWRIGHT_BROWSERS_PATH` and `OLLAMA_MODELS` are per-machine user env vars. On the PC both point to D:, because C: had 2.3 GB free before reclaim.
 - Ollama is 0.5.7 and must be upgraded before `qwen3:14b` will load.
+
+## 9. Addendum 2026-09-21 — statistics and coaching review
+
+Agreed additions after review. None changes the methods in §4; they add context and honesty around them.
+
+- **Multiple comparisons.** `analyze()` counts every interval it reports and exposes `comparisons: {n, expected_false_positives: n/20}`. A win-vs-loss entry is `signal: true` only when its CI is clear of zero **and** `|diff|` exceeds one MAD of that metric across all matches. The fallback and the prompt both use `signal`, not `uncertain`, to name priorities.
+- **Model honesty.** `logistic()` returns `auc_std` across folds. Map and agent one-hot columns enter the model only when there are at least 100 rows with a result (`MIN_CATEGORICAL_ROWS`); below that only the five continuous features are used. The result carries `categorical_used: bool`.
+- **Round margin.** `clean()` derives `round_diff = score_a - score_b`. `analyze()` reports the median margin in losses and in wins under `margins`. A player who loses 13-11 and one who loses 13-3 need different coaching.
+- **Consistency.** `form[field]` carries `mad`, the MAD already computed for the robust z, as a plain consistency number.
+- **Team context.** `parse_match` reads the player's whole team block, not one row, and derives `acs_rank_in_team` (1 = top ACS on the team, 5 = bottom). It is a `FIELDS` entry bounded to [1, 5] and joins the win-vs-loss comparisons.
+- **Rank context.** `rr_change` (int, unbounded) is a `FIELDS` entry and `lobby_rank` (string label) a `CONTEXT` entry. Both are optional: the parser records them only when the page shows them; the cleaner never invents them.
+- **Wider comparisons.** `DIFF_FIELDS` = `acs, adr, kast_pct, dd_delta, hs_pct, opening_balance, mk, kd, acs_rank_in_team`.

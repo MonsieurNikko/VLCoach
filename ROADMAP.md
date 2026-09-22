@@ -24,20 +24,20 @@ Legend: `[ ]` todo · `[x]` done · `[~]` in progress
 
 ## Task 1 — Skeleton, config, dependencies
 
-- [ ] `git mv` design doc to `2026-09-21-vlcoach-design.md`; rename `vcoach` → `vlcoach` in it and in `CLAUDE.md`
-- [ ] Append addendum §9 (statistics review) to design doc
-- [ ] `git rm docs/superpowers/plans/001-v0.2-implementation-plan.md`
-- [ ] `pyproject.toml`
-- [ ] `uv pip install -e ".[dev]"` — numpy, scipy, scikit-learn, pytest
-- [ ] `tests/test_config.py` — RED
-- [ ] `vlcoach/__init__.py`, `vlcoach/config.py` — GREEN
-- [ ] `HISTORY.md` entry, commit
+- [x] `git mv` design doc to `2026-09-21-vlcoach-design.md`; rename `vcoach` → `vlcoach` in it and in `CLAUDE.md`
+- [x] Append addendum §9 (statistics review) to design doc
+- [x] `git rm docs/superpowers/plans/001-v0.2-implementation-plan.md`
+- [x] `pyproject.toml`
+- [x] `uv pip install -e ".[dev]"` — numpy, scipy, scikit-learn, pytest
+- [x] `tests/test_config.py` — RED
+- [x] `vlcoach/__init__.py`, `vlcoach/config.py` — GREEN
+- [x] `HISTORY.md` entry, commit
 
 ## Task 2 — stats: proportions
 
-- [ ] `tests/test_stats.py` — Wilson vs literature, Jeffreys extremes, shrink inequality — RED
-- [ ] `vlcoach/stats.py` — `wilson`, `jeffreys`, `shrink` — GREEN
-- [ ] `HISTORY.md` entry, commit
+- [x] `tests/test_stats.py` — Wilson vs literature, Jeffreys extremes, shrink inequality — RED
+- [x] `vlcoach/stats.py` — `wilson`, `jeffreys`, `shrink` — GREEN
+- [x] `HISTORY.md` entry, commit
 
 ## Task 3 — stats: per-match series
 

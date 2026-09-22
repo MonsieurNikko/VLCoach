@@ -10,6 +10,7 @@ This file adds only what is specific to Claude Code, and must never contradict i
 - No batch writes, no parallel file creation.
 - Before any install, download, delete or move, say what and why, then wait.
 - After each completed step, append an entry to `HISTORY.md`: `## YYYY-MM-DD HH:MM — title`, then **Changed** and **Next** lists. Newest at the bottom.
+- Tick the matching box in `ROADMAP.md` when a sub-step is done.
 
 ## Workflow (spec §11)
 - Superpowers: `brainstorming` before design changes, `writing-plans` before multi-step work,
@@ -25,6 +26,8 @@ This file adds only what is specific to Claude Code, and must never contradict i
 - `PLAYWRIGHT_BROWSERS_PATH` and `OLLAMA_MODELS` are per-machine user env vars, not project
   config. On the PC both point to D:.
 - `.git` lives inside iCloud Drive: commit and push from one machine at a time.
+- Never `git checkout` another branch in this folder — the file storm makes iCloud lock `.git/index`.
+  This folder stays on `feat/v0.2`. `main` lives in a worktree at `D:\vlcoach-main`; cherry-pick there.
 - Line endings are LF everywhere (`.gitattributes`).
 
 ## Language
