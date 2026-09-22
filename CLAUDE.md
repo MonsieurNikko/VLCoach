@@ -1,5 +1,9 @@
 # Agent rules for this repo
 
+**Read `AGENTS.md` before editing anything.** It is the shared contract for every agent on this
+project: the invariants you must obey, and the canonical source for each kind of project fact.
+This file adds only what is specific to Claude Code, and must never contradict it.
+
 ## Pace
 - One file per step. Before writing a file, say what it does and why in five lines or fewer. Wait for "ok" before the next file.
 - After every edit, show the diff, or the whole file if new.
@@ -15,12 +19,6 @@
   Mark deliberate shortcuts with a `# ponytail:` comment naming the ceiling.
 - Plans in `docs/superpowers/plans/`, design specs in `docs/superpowers/specs/`.
 
-## Hard limits (spec §3.2, §5.3)
-- Scrapling `DynamicFetcher` only. Never `StealthyFetcher`, proxies, CAPTCHA handling,
-  fingerprint spoofing, or Tracker Network internal API calls.
-- Fail closed on any access block. No retry escalation.
-- Never fabricate a missing value. Never infer a match result the page did not state.
-
 ## Environment
 - Windows venv is `.venv`, Mac venv is `.venv-mac`. Both git-ignored, both iCloud-synced,
   each machine uses only its own.
@@ -30,5 +28,4 @@
 - Line endings are LF everywhere (`.gitattributes`).
 
 ## Language
-- Code, comments, commits, docs: English.
 - Coaching report: `--lang fr|en`, default `en`.

@@ -79,3 +79,19 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
 **Next**
 - Restart Claude Code and run `/reload-plugins`, or start a new session.
 - Use Codex through `npx -y @openai/codex` unless the CLI is added to the global npm path.
+
+## 2026-09-22 14:39 — One canonical source per agent fact
+
+**Changed**
+- `AGENTS.md` committed and promoted to the single constitution: added a Canonical sources
+  table (SPECIFICATION / ROADMAP / HISTORY / plans / specs) and restored the explicit
+  `StealthyFetcher` ban.
+- `.github/copilot-instructions.md` committed.
+- `CLAUDE.md` reduced to a Claude Code adapter: Hard limits and the English rule removed,
+  replaced by a read-`AGENTS.md`-first pointer. Pace, Workflow, Environment kept.
+
+**Next**
+- Copilot still carries its own copy of the invariants; add a generation step only if Copilot
+  is actually used to write project code.
+- `docs/MAP.md` once modules exist; a ROADMAP delete-zone once something is deliberately removed.
+- Resume the real work: ROADMAP Task 4 onward, no project code written yet.
