@@ -68,3 +68,14 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
 - User reviews design spec.
 - `superpowers:writing-plans` on approval.
 - README with bootstrap commands is required by spec §11/§12 — not written yet.
+
+## 2026-09-22 13:50 — Agent tooling configured
+
+**Changed**
+- Claude Code: ECC `v2.2.1` installed globally with standard hooks.
+- Codex: native `ecc@ecc` plugin installed and enabled from the official ECC marketplace.
+- GitHub Copilot: added `.github/copilot-instructions.md` with VLCoach constraints and dynamic workflow guidance.
+
+**Next**
+- Restart Claude Code and run `/reload-plugins`, or start a new session.
+- Use Codex through `npx -y @openai/codex` unless the CLI is added to the global npm path.
