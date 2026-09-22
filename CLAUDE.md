@@ -15,8 +15,8 @@ This file adds only what is specific to Claude Code, and must never contradict i
 - Superpowers: `brainstorming` before design changes, `writing-plans` before multi-step work,
   `test-driven-development` for all behaviour (RED → GREEN → REFACTOR),
   `systematic-debugging` for any failure, `verification-before-completion` before any "done".
-- Ponytail: stdlib before dependencies, fewest files, no speculative abstractions.
-  Mark deliberate shortcuts with a `# ponytail:` comment naming the ceiling.
+- Ponytail: follow the minimalism ladder in `AGENTS.md`. Plugin `ponytail@ponytail` 4.10.0 is
+  installed at user scope; `/ponytail lite|full|ultra` sets the intensity, default `full`.
 - Plans in `docs/superpowers/plans/`, design specs in `docs/superpowers/specs/`.
 
 ## Environment

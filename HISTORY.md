@@ -95,3 +95,22 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
   is actually used to write project code.
 - `docs/MAP.md` once modules exist; a ROADMAP delete-zone once something is deliberately removed.
 - Resume the real work: ROADMAP Task 4 onward, no project code written yet.
+
+## 2026-09-22 15:26 — Ponytail installed on the Mac, ladder made portable
+
+**Changed**
+- Installed `ponytail@ponytail` 4.10.0 at user scope on the Mac. It had only ever been
+  installed on the PC; plugins live in `~/.claude`, so the clone carried nothing.
+  Marketplace `DietrichGebert/ponytail` added (third non-official one).
+- `AGENTS.md`: new Minimalism ladder section, so Codex, Copilot and Antigravity get the
+  principles without the plugin. Recovered two rungs the old paraphrase had dropped —
+  "does this need to exist at all" and "does this repository already have it" — plus the
+  root-cause bugfix rule.
+- `CLAUDE.md`: Ponytail paraphrase replaced by a pointer to that section, plus the
+  Claude Code specifics (`/ponytail lite|full|ultra`, default `full`).
+
+**Next**
+- `/reload-plugins` or a new session: the six ponytail skills are not invocable in the
+  session that installed them.
+- Same two install commands on the PC are not needed — it already has 4.10.0.
+- Resume ROADMAP Task 4 onward. Still no project code written.
