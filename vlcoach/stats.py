@@ -69,3 +69,40 @@ def bootstrap_diff(win_vals, loss_vals, n_boot=N_BOOT, seed=SEED):
     diffs = [rng.choice(w, len(w)).mean() - rng.choice(l, len(l)).mean() for _ in range(n_boot)]
     lo, hi = np.percentile(diffs, [2.5, 97.5])
     return {"diff": float(w.mean() - l.mean()), "ci": [float(lo), float(hi)], "uncertain": bool(lo <= 0 <= hi)}
+
+
+def logistic(rows):
+    """L2 logistic regression, win ~ features + map + agent. Spec 7.7. Associations only."""
+    empty = {"skipped": None, "auc": None, "auc_std": None, "odds_ratios": {}, "categorical_used": False}
+    rs = [r for r in rows if r.get("win") is not None]
+    y = [r["win"] for r in rs]
+    if len(y) < MIN_MODEL_ROWS:
+        return {**empty, "skipped": f"need {MIN_MODEL_ROWS} rows with a result, have {len(y)}"}
+    if len(set(y)) < 2:
+        return {**empty, "skipped": "only one class present"}
+    from sklearn.impute import SimpleImputer
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.model_selection import StratifiedKFold, cross_val_score
+    from sklearn.pipeline import make_pipeline
+    from sklearn.preprocessing import OneHotEncoder, StandardScaler
+
+    X = np.array([[np.nan if r.get(f) is None else r[f] for f in MODEL_FEATURES] for r in rs], float)
+    names = list(MODEL_FEATURES)
+    use_cat = len(y) >= MIN_CATEGORICAL_ROWS   # below this, one-hot columns are noise with 3 obs each
+    if use_cat:
+        enc = OneHotEncoder(handle_unknown="ignore", sparse_output=False)
+        # ponytail: one-hot fit outside CV; harmless for categoricals, move into the pipeline if it ever matters
+        cat = enc.fit_transform([[r.get(c) or "unknown" for c in MODEL_CATEGORICAL] for r in rs])
+        X = np.hstack([X, cat])
+        names += list(enc.get_feature_names_out(MODEL_CATEGORICAL))
+    pipe = make_pipeline(SimpleImputer(keep_empty_features=True), StandardScaler(),
+                         LogisticRegression(l1_ratio=0, max_iter=1000))
+    folds = min(5, y.count(0), y.count(1))
+    auc = auc_std = None
+    if folds >= 2:
+        scores = cross_val_score(pipe, X, y, cv=StratifiedKFold(folds, shuffle=True, random_state=SEED), scoring="roc_auc")
+        auc, auc_std = float(scores.mean()), float(scores.std())
+    pipe.fit(X, y)
+    coef = pipe[-1].coef_[0]
+    return {**empty, "auc": auc, "auc_std": auc_std, "categorical_used": use_cat,
+            "odds_ratios": {n: float(math.exp(c)) for n, c in zip(names, coef)}}

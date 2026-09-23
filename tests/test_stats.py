@@ -48,3 +48,35 @@ def test_bootstrap_identical_groups_is_uncertain():
     assert r["uncertain"] is False and r["diff"] > 40
     assert S.bootstrap_diff([1], [1, 2]) is None
     assert S.bootstrap_diff([None, None], [1, 2, 3]) is None
+
+
+def _rows(n, wins, signal=True):
+    """Synthetic clean rows. Wins get higher dd_delta when signal=True."""
+    rows = []
+    for i in range(n):
+        win = 1 if i < wins else 0
+        rows.append({
+            "win": win, "map": ["Ascent", "Bind", "Haven"][i % 3], "agent": ["Jett", "Omen"][i % 2],
+            "dd_delta": (20 if win else -20) + (i % 7) if signal else i % 7,
+            "kast_pct": 70.0 + (i % 5), "acs": 200.0 + (i % 11), "opening_balance": (i % 3) - 1,
+            "hs_pct": None if i % 9 == 0 else 20.0 + (i % 4),
+        })
+    return rows
+
+
+def test_logistic_skips_small_or_single_class():
+    assert "need 40" in S.logistic(_rows(39, 20))["skipped"]
+    assert S.logistic(_rows(40, 40))["skipped"] == "only one class present"
+    assert S.logistic([])["skipped"]
+
+
+def test_logistic_fits_with_signal_and_missing_values():
+    r = S.logistic(_rows(60, 30))
+    assert r["skipped"] is None and r["auc"] > 0.8 and r["auc_std"] >= 0
+    assert r["odds_ratios"]["dd_delta"] > 1
+    assert r["categorical_used"] is False and not any(k.startswith("map_") for k in r["odds_ratios"])
+
+
+def test_logistic_uses_categoricals_at_100_rows():
+    r = S.logistic(_rows(120, 60))
+    assert r["categorical_used"] is True and any(k.startswith("map_") for k in r["odds_ratios"])

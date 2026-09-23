@@ -202,3 +202,18 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
 
 **Next**
 - Task 4 under the new regime: `logistic` with `auc_std`, `categorical_used`, `MIN_CATEGORICAL_ROWS`.
+
+## 2026-09-23 14:11 — Task 4: regularized logistic regression
+
+**Changed**
+- `tests/test_stats.py`: 3 tests appended (skip under 40 rows / single class, fit with signal
+  and missing values, categoricals only at 100 rows). RED confirmed.
+- `vlcoach/stats.py`: `logistic()` — sklearn pipeline (impute, scale, L2), stratified CV AUC
+  with `auc_std`, one-hot map/agent gated at `MIN_CATEGORICAL_ROWS`, odds ratios per feature.
+- Deviation from the plan: `penalty="l2"` raised 12 `FutureWarning`s — deprecated in sklearn 1.8,
+  removed in 1.10, and we run 1.9.1. Replaced with the documented equivalent `l1_ratio=0`.
+  Same regularization, no warnings, no breakage at the next minor. Plan file synced.
+- `pytest -q`: **12 passed**, no warnings.
+
+**Next**
+- Task 5: `analyze()` assembles the analysis JSON.

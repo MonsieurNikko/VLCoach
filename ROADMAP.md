@@ -47,9 +47,9 @@ Legend: `[ ]` todo · `[x]` done · `[~]` in progress
 
 ## Task 4 — stats: logistic regression
 
-- [ ] Tests — skipped <40, skipped one class, fits with signal, categoricals only at 100 — RED
-- [ ] `logistic` with `auc_std`, `categorical_used`, `MIN_CATEGORICAL_ROWS` gate — GREEN
-- [ ] `HISTORY.md` entry, commit
+- [x] Tests — skipped <40, skipped one class, fits with signal, categoricals only at 100 — RED
+- [x] `logistic` with `auc_std`, `categorical_used`, `MIN_CATEGORICAL_ROWS` gate — GREEN
+- [x] `HISTORY.md` entry, commit
 
 ## Task 5 — stats: analyze()
 
