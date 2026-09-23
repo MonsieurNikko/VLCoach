@@ -217,3 +217,19 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
 
 **Next**
 - Task 5: `analyze()` assembles the analysis JSON.
+
+## 2026-09-23 14:24 — stats.py rewritten for a junior reader
+
+**Changed**
+- `vlcoach/stats.py`: 108 -> 248 lines, behaviour identical. Every docstring now states the
+  question the function answers, what it returns, and when it returns None. Single-letter names
+  replaced (`w`/`l` -> `wins`/`losses`, `p` -> `observed_rate`, `rs` -> `scored_rows`).
+  The bootstrap and the feature matrix are explicit loops instead of dense comprehensions.
+- Comments explain decisions, not syntax: why median/MAD over mean/std, why the EWMA update is
+  written as a step, why sklearn is imported inside the function, why 100 rows gate the one-hot.
+- No logic touched. The 12 existing tests are the proof: **12 passed**, unchanged.
+- Ponytail tension, noted on purpose: the file more than doubled. Every added line is a comment
+  or a docstring, no logic was added, and the owner could not read his own statistics module.
+
+**Next**
+- Task 5: `analyze()` assembles the analysis JSON. Written in this style from the start.
