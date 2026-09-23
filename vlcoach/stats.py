@@ -37,3 +37,35 @@ def jeffreys(w, l):
 def shrink(wins_g, n_g, p_global, k=K):
     """Pseudo-count shrinkage toward the player's overall rate. Spec 7.3."""
     return (wins_g + k * p_global) / (n_g + k)
+
+
+def robust_z(xs):
+    """Median/MAD z-score per value, 0.67449 scaling. Spec 7.4. MAD == 0 -> all None."""
+    v = _vals(xs)
+    if len(v) < 2:
+        return [None] * len(xs)
+    med, mad = float(np.median(v)), float(sps.median_abs_deviation(v))
+    if mad == 0:
+        return [None] * len(xs)
+    return [None if x is None else 0.67449 * (x - med) / mad for x in xs]
+
+
+def ewma(xs, alpha=ALPHA):
+    """Exponentially weighted moving average; a None carries the previous value. Spec 7.5."""
+    out, s = [], None
+    for x in xs:
+        if x is not None:
+            s = x if s is None else s + alpha * (x - s)  # exact on a constant series
+        out.append(s)
+    return out
+
+
+def bootstrap_diff(win_vals, loss_vals, n_boot=N_BOOT, seed=SEED):
+    """mean(win) - mean(loss) with a 95% match-level bootstrap CI. Spec 7.6."""
+    w, l = np.array(_vals(win_vals), float), np.array(_vals(loss_vals), float)
+    if len(w) < 2 or len(l) < 2:
+        return None
+    rng = np.random.default_rng(seed)
+    diffs = [rng.choice(w, len(w)).mean() - rng.choice(l, len(l)).mean() for _ in range(n_boot)]
+    lo, hi = np.percentile(diffs, [2.5, 97.5])
+    return {"diff": float(w.mean() - l.mean()), "ci": [float(lo), float(hi)], "uncertain": bool(lo <= 0 <= hi)}

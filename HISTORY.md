@@ -174,3 +174,17 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
 - Task 3: `robust_z`, `ewma`, `bootstrap_diff`, TDD.
 - 17 commits ahead of `origin/main`, nothing pushed. Confirm the PC is idle before pushing.
 - Delete `origin/feat/v0.2` and the local backup ref once the push lands.
+
+## 2026-09-23 13:53 — Task 3: stats per-match series
+
+**Changed**
+- `tests/test_stats.py`: 3 tests appended, RED confirmed (`AttributeError`, as the plan predicted).
+- `vlcoach/stats.py`: `robust_z` (median/MAD, 0.67449 scaling, MAD=0 -> all None),
+  `ewma` (a None carries the previous value), `bootstrap_diff` (2000 resamples, seed 42).
+- Debugging: `ewma([3,3,3]) == [3,3,3]` failed. Root cause was the update form, not the test —
+  `alpha*x + (1-alpha)*s` gives 3.0000000000000004 on a constant series. Replaced with the
+  algebraically identical `s + alpha*(x - s)`, which is exact when `x == s`. Plan file synced.
+- `pytest -v`: **9 passed**.
+
+**Next**
+- Task 4: `logistic` with `auc_std`, `categorical_used`, `MIN_CATEGORICAL_ROWS` gate.

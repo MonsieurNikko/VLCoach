@@ -41,9 +41,9 @@ Legend: `[ ]` todo · `[x]` done · `[~]` in progress
 
 ## Task 3 — stats: per-match series
 
-- [ ] Tests — robust_z None/MAD=0, ewma constant/gaps, bootstrap identical/separated — RED
-- [ ] `robust_z`, `ewma`, `bootstrap_diff` — GREEN
-- [ ] `HISTORY.md` entry, commit
+- [x] Tests — robust_z None/MAD=0, ewma constant/gaps, bootstrap identical/separated — RED
+- [x] `robust_z`, `ewma`, `bootstrap_diff` — GREEN
+- [x] `HISTORY.md` entry, commit
 
 ## Task 4 — stats: logistic regression
 
