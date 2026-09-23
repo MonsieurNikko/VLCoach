@@ -5,12 +5,14 @@ project: the invariants you must obey, and the canonical source for each kind of
 This file adds only what is specific to Claude Code, and must never contradict it.
 
 ## Pace
-- One file per step. Before writing a file, say what it does and why in five lines or fewer. Wait for "ok" before the next file.
-- After every edit, show the diff, or the whole file if new.
-- No batch writes, no parallel file creation.
-- Before any install, download, delete or move, say what and why, then wait.
-- After each completed step, append an entry to `HISTORY.md`: `## YYYY-MM-DD HH:MM — title`, then **Changed** and **Next** lists. Newest at the bottom.
-- Tick the matching box in `ROADMAP.md` when a sub-step is done.
+- Approval is per task, not per file. Before starting one, say in five lines or fewer what it
+  changes and why. Run it end to end, then show the full diff and the `pytest` output, and wait
+  for "ok". One task is one commit, so `git revert` undoes a bad one.
+- High blast radius keeps the stricter rule — one file per step, wait for "ok" before the next:
+  `collect.py`, anything touching the network, the hard limits in `AGENTS.md`, or the other machine.
+- Before any install, download, delete or move, say what and why, then wait. No exception.
+- Tick each sub-step box in `ROADMAP.md` as it is done, so progress stays visible between approvals.
+- After each completed task, append an entry to `HISTORY.md`: `## YYYY-MM-DD HH:MM — title`, then **Changed** and **Next** lists. Newest at the bottom.
 
 ## Workflow (spec §11)
 - Superpowers: `brainstorming` before design changes, `writing-plans` before multi-step work,

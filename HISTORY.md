@@ -188,3 +188,17 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
 
 **Next**
 - Task 4: `logistic` with `auc_std`, `categorical_used`, `MIN_CATEGORICAL_ROWS` gate.
+
+## 2026-09-23 14:06 — Pace rule graduated by blast radius
+
+**Changed**
+- `CLAUDE.md` pace: approval moves from per-file to per-task, with the full diff and the
+  `pytest` output shown before the gate. One task is one commit, so `git revert` is the recovery.
+- Per-file approval kept where the blast radius is real: `collect.py`, the network, the hard
+  limits, the other machine. Installs, downloads, deletions and moves still always wait.
+- ROADMAP sub-step boxes are still ticked as they go, so progress stays visible between gates.
+- Rationale: professional practice grades oversight by risk rather than applying maximum
+  vigilance uniformly (arXiv 2512.14012). `AGENTS.md` unchanged — pace is harness-specific.
+
+**Next**
+- Task 4 under the new regime: `logistic` with `auc_std`, `categorical_used`, `MIN_CATEGORICAL_ROWS`.
