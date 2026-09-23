@@ -21,13 +21,13 @@ This file adds only what is specific to Claude Code, and must never contradict i
 - Plans in `docs/superpowers/plans/`, design specs in `docs/superpowers/specs/`.
 
 ## Environment
-- Windows venv is `.venv`, Mac venv is `.venv-mac`. Both git-ignored, both iCloud-synced,
-  each machine uses only its own.
+- Windows venv is `.venv`, Mac venv is `.venv-mac`. Both git-ignored, each machine uses only
+  its own. Python is 3.13 on the PC, 3.12 on the Mac.
 - `PLAYWRIGHT_BROWSERS_PATH` and `OLLAMA_MODELS` are per-machine user env vars, not project
   config. On the PC both point to D:.
-- `.git` lives inside iCloud Drive: commit and push from one machine at a time.
-- Never `git checkout` another branch in this folder — the file storm makes iCloud lock `.git/index`.
-  This folder stays on `feat/v0.2`. `main` lives in a worktree at `D:\vlcoach-main`; cherry-pick there.
+- On the PC the repo sits inside iCloud Drive: commit and push from one machine at a time, and
+  avoid `git checkout` there — the file storm locked `.git/index` once (`HISTORY.md`, 2026-09-22 01:09).
+  The Mac clone is outside iCloud, so switching branches on it is safe.
 - Line endings are LF everywhere (`.gitattributes`).
 
 ## Language

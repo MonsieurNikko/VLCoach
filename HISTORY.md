@@ -155,3 +155,22 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
   session that installed them.
 - Same two install commands on the PC are not needed — it already has 4.10.0.
 - Resume ROADMAP Task 4 onward. Still no project code written.
+
+## 2026-09-23 13:51 — feat/v0.2 merged into main, Mac environment built
+
+**Changed**
+- Merged `feat/v0.2` into `main` (`fb5256b`). `main` had only cherry-picked documentation;
+  Tasks 1 and 2 lived on the branch and had never been ported. One conflict, `HISTORY.md`,
+  resolved chronologically. Backup ref kept at `backup/main-before-merge`.
+- `.venv-mac` created, Python 3.12.13, `uv pip install -e ".[dev]"`: numpy 2.5.3, scipy 1.18.1,
+  scikit-learn 1.9.1, pytest 9.1.1, scrapling 0.4.15 at the pinned commit.
+- `pytest -v`: **6 passed**. Wilson checked against Newcombe 1998.
+- `SPECIFICATION.md`: CLI examples renamed `vcoach` -> `vlcoach`, matching the entry point.
+- `CLAUDE.md`: the worktree rule is gone, the merge ended that convention. The iCloud warning
+  stays for the PC; the Mac clone is outside iCloud, verified, so branch switching is safe there.
+  Corrected the false claim that both venvs are iCloud-synced.
+
+**Next**
+- Task 3: `robust_z`, `ewma`, `bootstrap_diff`, TDD.
+- 17 commits ahead of `origin/main`, nothing pushed. Confirm the PC is idle before pushing.
+- Delete `origin/feat/v0.2` and the local backup ref once the push lands.

@@ -364,21 +364,21 @@ The coach must:
 ### Full pipeline
 
 ```bash
-vcoach run "Player#TAG" --matches 50 --model auto
+vlcoach run "Player#TAG" --matches 50 --model auto
 ```
 
 ### Individual stages
 
 ```bash
-vcoach collect "Player#TAG" --matches 50
-vcoach analyze "Player#TAG"
-vcoach coach "Player#TAG" --model auto
+vlcoach collect "Player#TAG" --matches 50
+vlcoach analyze "Player#TAG"
+vlcoach coach "Player#TAG" --model auto
 ```
 
 If headless rendering fails:
 
 ```bash
-vcoach collect "Player#TAG" --matches 50 --headed
+vlcoach collect "Player#TAG" --matches 50 --headed
 ```
 
 ---
