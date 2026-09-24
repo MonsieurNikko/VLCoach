@@ -3,7 +3,7 @@
 ## Project constraints
 
 - Keep all code, comments, documentation, and commits in English.
-- Use `Scrapling DynamicFetcher` only for collection. Never use stealth fetchers, proxies, CAPTCHA handling, fingerprint spoofing, or Tracker Network internal APIs.
+- Use `Scrapling DynamicFetcher` or `StealthyFetcher` for collection. v0.2 uses `DynamicFetcher` only; switch after an observed block, recorded as a design change.
 - Fail closed when access is blocked. Do not escalate retries.
 - Never fabricate missing values or infer match results that the source page does not state.
 - Preserve the pipeline boundary: collect writes raw snapshots, clean produces typed rows, stats computes evidence, and coach only phrases computed evidence.

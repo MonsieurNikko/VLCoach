@@ -233,3 +233,20 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
 
 **Next**
 - Task 5: `analyze()` assembles the analysis JSON. Written in this style from the start.
+
+## 2026-09-24 11:55 — StealthyFetcher allowed, DynamicFetcher kept in v0.2
+
+**Changed**
+- `AGENTS.md`: the owner lifted the permanent ban on `StealthyFetcher`, proxies, CAPTCHA
+  handling, fingerprint spoofing and Tracker internal APIs. v0.2 still uses `DynamicFetcher`
+  only; switching needs an observed block and a recorded design change. Fail closed unchanged.
+- Aligned on that rule: `.github/copilot-instructions.md`, `SPECIFICATION.md` §5.3, the design
+  spec (dated amendment under the collection decision), the plan's Global Constraints, and the
+  `README.md` hard limits line, which now links `AGENTS.md` instead of `CLAUDE.md`.
+- Left as is because still true for v0.2: README access notice, spec §3.2 exclusions, and the
+  `grep "StealthyFetcher\|proxy" vlcoach/` check in `ROADMAP.md`.
+
+**Next**
+- Fix the three Important findings of the stats.py review (bootstrap minimum per side, one-hot
+  columns scaled, OR = 1.0 on empty or constant features), brainstorming first since two of
+  them change the plan.

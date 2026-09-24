@@ -165,7 +165,7 @@ No cloud key. Nothing leaves the machine.
 
 `https://tracker.gg/robots.txt` disallows `/*/profile/*` and `/*/matches/*`, and Tracker Network states it does not permit scraping. This tool requests those pages anyway — for **your own public profile only**, with a real headless Chromium, a fixed 3-second delay, and no stealth, proxy, CAPTCHA or fingerprint logic of any kind. It stops on the first block and never retries harder. Use it on your own data and accept that access may end at any time.
 
-Hard limits, enforced in code and in [`CLAUDE.md`](CLAUDE.md): `DynamicFetcher` only, fail closed, never fabricate a missing value, never infer a result the page did not state.
+Hard limits, enforced in code and in [`AGENTS.md`](AGENTS.md): `DynamicFetcher` in v0.2, fail closed, never fabricate a missing value, never infer a result the page did not state.
 
 ---
 

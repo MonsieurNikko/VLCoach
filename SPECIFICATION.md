@@ -150,7 +150,7 @@ The exact Scrapling components and scraping technique are therefore an implement
 
 The scraper must return partial results rather than discard the entire run when one match fails.
 
-Tracker Network has publicly stated that scraping its websites is not allowed. The implementation must therefore fail closed on an automated-access block and must not add stealth/proxy/challenge-bypass logic.
+Tracker Network has publicly stated that scraping its websites is not allowed. The implementation must therefore fail closed on an automated-access block. v0.2 adds no stealth/proxy/challenge-bypass logic; adding any, such as `StealthyFetcher`, requires an observed block and a recorded design change.
 
 It must report:
 
