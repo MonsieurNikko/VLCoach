@@ -89,15 +89,21 @@ def shrink(wins_in_group, n_in_group, overall_rate, k=K):
 
 
 def robust_z(xs):
-    """Which matches were unusual for this player, on this metric?
+    """Scores each match by how unusual it was for you, on one stat.
 
-    Returns one score per input value, same length and order, None where the
-    input was None. A score near 0 is a typical match, above 2 is a standout.
+    Example: ACS over six matches [210, 190, 250, 200, 480, 205] scores
+    [0.13, -0.94, 2.29, -0.40, 14.70, -0.13]. Near 0 is a normal game for you;
+    above 2 stands out. The 480 game is exceptional, and the 250 game is flagged
+    too. A plain average would even rate 250 as below average, because the 480
+    pulls the average up to 256.
 
-    Uses median and MAD rather than mean and standard deviation, because one
-    disastrous game would drag a mean far enough to hide everything else. The
-    0.67449 factor rescales MAD so the numbers read like ordinary z-scores.
-    Spec 7.4.
+    Used by: analyze(), as outliers[field]["z"] for ACS, ADR, KAST and DD-delta,
+    so the report can point at your standout and disaster matches.
+
+    Detail: median/MAD robust z-score, spec 7.4. The 0.67449 factor rescales MAD
+    so scores read like ordinary z-scores. Returns one score per input, same
+    order, None where the input was None. All None with fewer than 2 values or
+    when every value is identical.
     """
     known = _vals(xs)
     if len(known) < 2:
@@ -115,13 +121,19 @@ def robust_z(xs):
 
 
 def ewma(xs, alpha=ALPHA):
-    """Where is this metric trending, weighting recent matches more heavily?
+    """Gives your recent form on one stat: a running average that favours the latest matches.
 
-    Returns one smoothed value per input, same length and order. Each new match
-    moves the line by alpha of the gap between it and the current value, so at
-    alpha=0.20 a single game shifts the trend by a fifth of its distance. A
-    missing match carries the previous value forward rather than breaking the
-    series. Leading Nones stay None until the first real value arrives. Spec 7.5.
+    Example: ACS [200, 200, 300, 300] gives [200, 200, 220, 236]. Two good games
+    lift your form from 200 to 236, not straight to 300: each game moves it by a
+    fifth of the gap. A missing match keeps the previous value:
+    [None, 200, None, 300] gives [None, 200, 200, 220].
+
+    Used by: analyze(), as form[field]["ewma"] and form[field]["last"] for ACS,
+    ADR, KAST and DD-delta, so the report can say whether you are trending up or down.
+
+    Detail: exponentially weighted moving average, spec 7.5, alpha = 0.20
+    (config.ALPHA). Returns one value per input, same order. Leading Nones stay
+    None until the first real value arrives.
     """
     smoothed = []
     current = None
