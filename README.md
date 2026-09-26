@@ -16,7 +16,7 @@
 
 <br/><br/>
 
-**`vlcoach run "Name#TAG"`** → a coaching report where every claim carries a confidence interval, a sample size, and an *association ≠ causation* caveat.
+**`vlcoach run "Name#TAG"`** → a coaching report that answers *"what is my main weak point right now, the one that makes me lose and keeps my rank stuck?"* — where every claim carries a confidence interval, a sample size, and an *association ≠ causation* caveat.
 
 </div>
 
@@ -42,9 +42,16 @@ A local LLM only phrases evidence that was already computed. It never sees raw H
 | Was that match unusual *for me*? | **Median / MAD robust z-score** |
 | Which metrics actually differ between my wins and losses? | **2,000-resample match-level bootstrap** — an effect is a `signal` only if the CI is clear of zero **and** larger than one MAD |
 | Which combination is associated with winning? | **L2 logistic regression**, stratified CV AUC ± std, minimum 40 games |
+| Am I stuck at my level? | Last-20-games win rate: a **Wilson interval containing 50%** means you win as much as you lose |
+| How much does a stat separate my wins from my losses? | **Cliff's delta** + your win rate when the stat is above vs below your own median |
+| How many of those gaps are false alarms? | **Benjamini–Hochberg** false-discovery control over every comparison |
+| Is a stat trending up or down? | **Theil–Sen** slope + **Mann–Kendall** trend test |
+| Do I lose close games or get stomped? | Round win % + share of losses by ≤ 2 rounds |
+| Do I tilt, or fade late in a session? | Win rate after a loss vs after a win; session games 1–2 vs 3+ |
+| So what is my main weak point? | Candidates that survive false-discovery control, **ranked by effect size** — not a weighted score |
 | Is any of this causal? | **No.** The report says so, every time. |
 
-Plus, after a statistics-and-coaching review: how many comparisons were made and how many false positives to expect, round margin in losses vs wins, consistency (MAD), your ACS rank inside your own team, and RR change when the page shows it.
+Every personal stat is covered, including per-round rates and opening duels, plus your current map pool, agents and roles. You are compared only with yourself: wins against losses, recent against older. TRS (tracker.gg's score) is shown as a level and trend, never as a win/loss gap, since it already includes the result. Design: [`docs/superpowers/specs/2026-09-26-vlcoach-weak-points-design.md`](docs/superpowers/specs/2026-09-26-vlcoach-weak-points-design.md).
 
 ---
 
@@ -56,7 +63,7 @@ flowchart LR
     B --> C["raw/*.json<br/>+ HTML snapshots"]
     C --> D["clean<br/><sub>type · bounds · dedup</sub>"]
     D --> E["clean/*.csv"]
-    E --> F["stats<br/><sub>7 methods · analyze()</sub>"]
+    E --> F["stats<br/><sub>analyze() · weak points</sub>"]
     F --> G["analysis/*.json"]
     G --> H{"Ollama up?"}
     H -- yes --> I["qwen3:14b<br/><sub>guardrailed prompt</sub>"]
@@ -75,6 +82,7 @@ vlcoach/
   collect.py   the only module that touches the network
   clean.py     raw strings → typed rows; implausible → missing, never fabricated
   stats.py     wilson · jeffreys · shrink · robust_z · ewma · bootstrap_diff · logistic · analyze
+               (+ per-round, opening duels, Cliff's delta, trends, BH, tilt, sessions, weak_points — Task 5b)
   coach.py     Ollama client + bilingual fallback, same five sections either way
   cli.py       run · collect · analyze · coach
 ```
@@ -85,13 +93,13 @@ vlcoach/
 
 Five sections, always, in English or French (`--lang fr|en`):
 
-1. **What the data actually says**
-2. **What is probably noise / uncertain**
-3. **Three coaching priorities**
-4. **Next 10-game experiment**
-5. **What extra data would unlock better coaching**
+1. **Your profile** — win rate overall and last 20 games, stuck or not, TRS trend, best and worst maps, agents and roles
+2. **Your main issue** — the one weak point most tied to your losses, with its numbers
+3. **Why it keeps your rank stuck** — how it shows in your losses, and whether it is getting worse
+4. **What is probably noise** — what looks bad but could be luck
+5. **Plan for the next 10–20 games** — one habit to change, and the number to watch
 
-If Ollama is down, missing the model, or returns garbage, the deterministic fallback writes the same five sections from templates. The AI is optional; the statistics are not.
+The AI may only pick the main issue from the ranked `weak_points` the statistics produced. If Ollama is down, missing the model, or returns garbage, the deterministic fallback writes the same five sections from templates and uses the top-ranked weak point. The AI is optional; the statistics are not.
 
 ---
 
@@ -142,7 +150,7 @@ Outputs land under `data/`:
 ```
 data/raw/<stem>.json          every value as the page showed it, plus per-page HTML snapshots
 data/clean/<stem>.csv         one typed row per match
-data/analysis/<stem>.json     every interval, every sample size, the leakage warning
+data/analysis/<stem>.json     versioned: every result, interval and sample size, ranked weak_points, the leakage warning
 data/analysis/<stem>_coach.md the report
 ```
 
@@ -176,7 +184,8 @@ Built test-first, one module at a time, following the [Superpowers](https://gith
 - [x] Environment, design spec, implementation plan
 - [x] `config` — field table, Riot ID parsing
 - [x] `stats` — Wilson, Jeffreys, shrinkage
-- [ ] `stats` — robust z, EWMA, bootstrap, logistic, `analyze()`
+- [x] `stats` — robust z, EWMA, bootstrap, logistic, `analyze()`
+- [ ] `stats` — main weak point: per-round rates, opening duels, stronger loss evidence, trends, tilt, sessions, ranking (design done)
 - [ ] `clean`, `coach`, `cli`
 - [ ] `collect` — live scraping against fixtures
 - [ ] Ollama upgrade, model measurement

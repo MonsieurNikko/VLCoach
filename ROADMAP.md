@@ -59,6 +59,24 @@ Legend: `[ ]` todo · `[x]` done · `[~]` in progress
 - [x] `analyze` with `signal`, `comparisons`, `margins`, `form[*].mad` — GREEN
 - [x] `HISTORY.md` entry, commit
 
+## Task 5b — stats: main weak point (design `2026-09-26-vlcoach-weak-points-design.md`)
+
+One function or small feature per step, failing test first, stop for "ok".
+
+- [x] Brainstorm, design spec written and committed
+- [ ] Spec reviewed and approved by the owner
+- [ ] Implementation plan written (writing-plans)
+- [ ] `config.py` — `RECENT_N`, `MIN_PER_SIDE`, `CLOSE_MARGIN`, `SESSION_GAP_HOURS`, `ROLES`, `BETTER`, `PERSONAL_FIELDS`
+- [ ] `bootstrap_diff` — 5 matches per side, returns "how sure"
+- [ ] `logistic` — one-hot not rescaled, no fake odds ratio (+ plain-first docstring)
+- [ ] Formulas — `per_round`, `opening_duels`, `cliffs_delta`, `conditional_winrate`, `trend`, `bh_adjust`
+- [ ] Helpers — split recent / older, split into sessions
+- [ ] Blocks — `profile`, `personal`, `games`, `tilt`, `sessions`, `pool`, `outliers` with match id and date
+- [ ] `weak_points` ranking
+- [ ] `analyze()` returns contract v1 (+ plain-first docstrings)
+- [ ] `config.py` plain-first docstrings
+- [ ] `HISTORY.md` entry, commit
+
 ## Task 6 — clean
 
 - [ ] `tests/test_clean.py` — percent/bounds, dedup, result never inferred, derived+sorted, quality — RED
@@ -67,14 +85,14 @@ Legend: `[ ]` todo · `[x]` done · `[~]` in progress
 
 ## Task 7 — coach: fallback
 
-- [ ] `tests/test_coach.py` — five headings en/fr, small sample wording, empty analysis — RED
-- [ ] `vlcoach/coach.py` — `HEADINGS`, templates, `fallback` using `signal`, margins, consistency, team rank, comparisons — GREEN
+- [ ] `tests/test_coach.py` — five new headings en/fr (profile, main issue, why stuck, noise, 10–20 game plan), small sample wording, empty `weak_points`, empty analysis — RED
+- [ ] `vlcoach/coach.py` — `HEADINGS`, templates, `fallback` using `weak_points[0]`, profile, pool, tilt, sessions, games — GREEN
 - [ ] `HISTORY.md` entry, commit
 
 ## Task 8 — coach: Ollama client
 
 - [ ] Test — dead port returns None — RED
-- [ ] `GUARDRAILS`, `ask_ollama` — GREEN
+- [ ] `GUARDRAILS` (main issue only from `weak_points`, TRS never a win/loss weakness), `ask_ollama` — GREEN
 - [ ] `HISTORY.md` entry, commit
 
 ## Task 9 — cli: offline pipeline
@@ -87,7 +105,7 @@ Legend: `[ ]` todo · `[x]` done · `[~]` in progress
 ## Task 10 — collect: the only network task
 
 - [ ] Capture `tests/fixtures/profile.html` and `match.html` from own profile (ask first); make `damaged.html`
-- [ ] Inspect fixtures, fill `SELECTORS` (cells, team block, map/agent/result/scores/timestamp, optional RR/lobby rank)
+- [ ] Inspect fixtures, fill `SELECTORS` (cells incl. TRS, team block, map/agent/result/scores/timestamp, optional RR/lobby rank); record whether the timestamp has a time (sessions need it) and whether RR is shown
 - [ ] `tests/test_collect.py` — structural tests, no network — RED
 - [ ] `vlcoach/collect.py` — `BlockedError`, `ParseError`, `parse_profile`, `parse_match` with team rank, `fetch_all` — GREEN
 - [ ] Live run `vlcoach collect "Name#TAG" --matches 10` (ask first), then `analyze`, `coach`
@@ -105,7 +123,8 @@ Legend: `[ ]` todo · `[x]` done · `[~]` in progress
 
 - [ ] `pytest -v` all green, ≥ 22 tests
 - [ ] `vlcoach --help`
-- [ ] Small-sample run: wide interval, model skipped, no confident wording
+- [ ] Small-sample run: wide interval, model skipped, no confident wording, empty `weak_points` stated plainly
+- [ ] Planted-weakness run: synthetic data with high first deaths in losses → named as main issue
 - [ ] Ollama stopped → fallback file produced
 - [ ] Ollama running → `ollama ->`, five headings, no invented claims
 - [ ] Full `vlcoach run` → four artifacts, or clean `BlockedError` exit

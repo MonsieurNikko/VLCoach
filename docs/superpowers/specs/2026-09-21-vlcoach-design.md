@@ -115,6 +115,8 @@ Downstream is None-tolerant instead of raising:
 
 ## 6. Coaching output
 
+> Superseded 2026-09-26 by §10: new headings and a fallback built on `weak_points`.
+
 Both `ask_ollama` and `fallback` produce exactly these five headings, in the chosen language, in this order (spec §8.3):
 
 1. What the data actually says
@@ -160,10 +162,20 @@ Fixtures are real page snapshots captured once by hand, git-ignored. `fetch_all`
 
 Agreed additions after review. None changes the methods in §4; they add context and honesty around them.
 
-- **Multiple comparisons.** `analyze()` counts every interval it reports and exposes `comparisons: {n, expected_false_positives: n/20}`. A win-vs-loss entry is `signal: true` only when its CI is clear of zero **and** `|diff|` exceeds one MAD of that metric across all matches. The fallback and the prompt both use `signal`, not `uncertain`, to name priorities.
+- **Multiple comparisons** (the n/20 estimate is replaced by Benjamini–Hochberg, see §10). `analyze()` counts every interval it reports and exposes `comparisons: {n, expected_false_positives: n/20}`. A win-vs-loss entry is `signal: true` only when its CI is clear of zero **and** `|diff|` exceeds one MAD of that metric across all matches. The fallback and the prompt both use `signal`, not `uncertain`, to name priorities.
 - **Model honesty.** `logistic()` returns `auc_std` across folds. Map and agent one-hot columns enter the model only when there are at least 100 rows with a result (`MIN_CATEGORICAL_ROWS`); below that only the five continuous features are used. The result carries `categorical_used: bool`.
 - **Round margin.** `clean()` derives `round_diff = score_a - score_b`. `analyze()` reports the median margin in losses and in wins under `margins`. A player who loses 13-11 and one who loses 13-3 need different coaching.
 - **Consistency.** `form[field]` carries `mad`, the MAD already computed for the robust z, as a plain consistency number.
 - **Team context.** `parse_match` reads the player's whole team block, not one row, and derives `acs_rank_in_team` (1 = top ACS on the team, 5 = bottom). It is a `FIELDS` entry bounded to [1, 5] and joins the win-vs-loss comparisons.
 - **Rank context.** `rr_change` (int, unbounded) is a `FIELDS` entry and `lobby_rank` (string label) a `CONTEXT` entry. Both are optional: the parser records them only when the page shows them; the cleaner never invents them.
 - **Wider comparisons.** `DIFF_FIELDS` = `acs, adr, kast_pct, dd_delta, hs_pct, opening_balance, mk, kd, acs_rank_in_team`.
+
+## 10. Amendment 2026-09-26 — main weak point
+
+Full design: `2026-09-26-vlcoach-weak-points-design.md`. It supersedes these parts of this document:
+
+- **§3 analysis contract.** The JSON becomes versioned (`meta.version: 1`). `form`, `win_vs_loss`, `by_map` and `by_agent` move into `personal` and `pool`. New blocks: `profile`, `opening_duels`, `games`, `tilt`, `sessions`, `weak_points`. `outliers` carry `match_id` and `timestamp`.
+- **§4 methods.** Added: recent against older (last 20), per-round rates, opening duel rate, conditional win rate, Cliff's delta, Benjamini–Hochberg, Theil–Sen with Mann–Kendall, close games, tilt and sessions, and the weak-point ranking. `bootstrap_diff` needs 5 matches per side and reports "how sure". `logistic` stops rescaling one-hot columns and reports no odds ratio for empty or constant features.
+- **§6 coaching output.** The five headings become: Your profile; Your main issue; Why it keeps your rank stuck; What is probably noise; Plan for the next 10–20 games. The AI picks the main issue only from `weak_points`; the fallback uses `weak_points[0]`.
+- **§9 multiple comparisons.** `expected_false_positives = n/20` is replaced by Benjamini–Hochberg; `comparisons` keeps the count and adds how many survive.
+- **§9 rank context.** tracker.gg shows TRS, not RR, per match. "Stuck" is decided from the recent win rate; `rr_change` stays optional. TRS is a level and trend only, never compared between wins and losses.

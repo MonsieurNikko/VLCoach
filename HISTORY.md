@@ -330,3 +330,32 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
 - Bring the existing `stats.py` and `config.py` docstrings to the new format, one step at a time:
   win-rate trio, robust_z/ewma, bootstrap_diff, logistic, analyze and helpers, config.py.
 - Resume the stats.py review fixes, then Task 6 (`clean`), one function per step.
+
+## 2026-09-26 18:26 — Brainstorm: the report names the player's main weak point
+
+**Changed**
+- Docstrings rewritten plain-first for `wilson`, `jeffreys`, `shrink` (`e47ca56`), `robust_z`,
+  `ewma` (`b8b81a8`) and `bootstrap_diff` (`309b2c6`). Every example number was run through the
+  real function. The rest (`logistic`, `analyze`, `config.py`) moves into the steps that rewrite them.
+- Brainstorm with the owner. The report now answers one question: "what is my main weak point
+  right now, the one that makes me lose and keeps my rank stuck?" Decisions:
+  - compare the player with themselves only (wins/losses, last 20 against older), no lobby or
+    rank benchmark: players ask for coaching when they are stuck;
+  - the AI writes a profile, then picks the main issue, but only from a ranked `weak_points`
+    list the statistics produce; the fallback uses `weak_points[0]`;
+  - tracker.gg shows TRS, not RR, per match (owner). TRS is a level and trend only, never a
+    win/loss gap, because it includes the result. "Stuck" = recent win-rate range contains 50%;
+  - every personal stat is analysed, plus per-round rates, opening duels, conditional win rate,
+    Cliff's delta, Benjamini–Hochberg, Theil–Sen + Mann–Kendall trends, close games, tilt and
+    sessions, map pool (maps in the last 20), agents and roles (fixed table);
+  - one versioned analysis JSON (`meta.version: 1`) carries everything the AI reads; the AI does
+    not learn between runs, it reads that file fresh each time.
+- New spec `docs/superpowers/specs/2026-09-26-vlcoach-weak-points-design.md` (`f423142`).
+- Aligned on it: `SPECIFICATION.md` (§1 question, §2 method table, §3.1, §4.3 derived metrics and
+  TRS/RR note, §7.3/7.6/7.7 changes, new §7.8–7.16, §8.2–8.4 report and guardrails, §10 JSON
+  blocks, §12 acceptance), the 2026-09-21 design (§10 amendment, superseded markers in §6 and §9),
+  the v0.2 plan (Global Constraints, notes on Tasks 5 and 7–9), `ROADMAP.md` (new Task 5b, Tasks
+  7, 8, 10, 12 adjusted), `README.md` (question, method table, report, outputs, stale status fixed).
+
+**Next**
+- Owner reviews the weak-points spec. Then writing-plans for Task 5b, built one function per step.

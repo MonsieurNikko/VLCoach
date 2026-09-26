@@ -14,6 +14,8 @@ The pipeline must:
 6. send only the calculated evidence to a local AI model;
 7. produce a concise coaching report with actionable experiments.
 
+The report answers one question for the player: **what is my main weak point right now, the one that makes me lose and keeps my rank stuck?** The player is compared only with themselves (wins against losses, recent against older), never with their lobby or with rank benchmarks. Design: `docs/superpowers/specs/2026-09-26-vlcoach-weak-points-design.md`.
+
 The first release is a personal analytics tool, not a universal player ranking system.
 
 ---
@@ -34,6 +36,13 @@ Such weights are arbitrary and hide uncertainty. Instead, each statistical metho
 | Was a recent performance unusually high/low for me? | Median/MAD robust z-score |
 | Which match metrics differ between wins and losses? | Match-level bootstrap confidence intervals |
 | Which combination of variables is associated with winning? | Regularized logistic regression + cross-validation |
+| Am I stuck at my level? | Recent win rate Wilson interval containing 50% |
+| How much does a stat separate my wins from my losses? | Cliff's delta (Mann–Whitney) + conditional win rate above/below my own median |
+| How many of my "real gaps" are false alarms? | Benjamini–Hochberg false-discovery control over all comparisons |
+| Is a stat trending up or down over my matches? | Theil–Sen slope + Mann–Kendall trend test |
+| Do I lose close games or get stomped? | Round win % (Wilson) + share of losses by ≤ 2 rounds |
+| Do I tilt after losses or fade late in a session? | Win rate after a loss vs after a win; session games 1–2 vs 3+ (bootstrap on 0/1) |
+| What is my main weak point right now? | Candidates that survive Benjamini–Hochberg, ranked by effect size (Cliff's delta) — not a weighted score |
 | Can the result be interpreted as causal? | No; the report must explicitly distinguish association from causation |
 
 ---
@@ -49,7 +58,7 @@ Such weights are arbitrary and hide uncertainty. Instead, each statistical metho
 - No private API key required.
 - Raw JSON archive for reproducibility/debugging.
 - Clean per-match CSV.
-- Analysis JSON containing statistical results and uncertainty.
+- Analysis JSON containing statistical results and uncertainty, versioned (`meta.version`), including a ranked list of candidate weak points (`weak_points`).
 - Local AI coaching through Ollama.
 - Deterministic non-AI fallback report if Ollama is unavailable.
 - CLI commands for collection, analysis, coaching, and the full pipeline.
@@ -117,6 +126,10 @@ One cleaned row represents one competitive match for the target player.
 - computed K/D from kills and deaths (validation field)
 - opening balance = `FK - FD`
 - binary win target
+- rounds played = `score_a + score_b`, and per-round rates of kills, deaths, assists, FK, FD and MK
+- agent role, from a fixed agent → role table (`unknown` for an agent not in the table, never guessed)
+
+TRS (Tracker Score) is tracker.gg's own per-match 0–1000 score. Its formula is not public and reportedly includes win %, so it is used as a general level and trend only, never in win/loss comparisons. `rr_change` is optional: recorded only when a page shows it, never required.
 
 Missing values remain missing. The cleaner must never fabricate unavailable values.
 
@@ -232,6 +245,8 @@ Purpose: a 3-0 map should not be treated as stronger evidence than a 55-45 map m
 
 The program reports both raw and shrunk values; it does not hide the original data.
 
+Groups: maps in the current pool (maps seen in the last 20 matches), agents, and agent roles. Each group also gets its Wilson interval (7.1). A group is a weak point only when its whole interval lies below the overall win rate.
+
 ## 7.4 Robust personal baseline — median/MAD z-score
 
 Use:
@@ -268,6 +283,8 @@ Report the 2.5th and 97.5th percentiles.
 
 A signal whose interval crosses zero is presented as uncertain.
 
+Each side needs at least 5 matches; with fewer the comparison is skipped, because resampling 2 values yields only 3 distinct means and fakes precision. The result also reports "how sure": the share of resampled differences on the bad side.
+
 In v0.2, one row is one match, so the cluster is naturally the match. In the round-level version, all rounds from the same match must be resampled together to avoid pretending correlated rounds are independent.
 
 ## 7.7 Multivariable win association — regularized logistic regression
@@ -286,7 +303,7 @@ Candidate variables:
 - map
 - agent
 
-Continuous variables are standardized. Map and agent are one-hot encoded. Missing values are imputed inside the modeling pipeline. Use L2 regularization to reduce instability caused by correlated features.
+Continuous variables are standardized. Map and agent are one-hot encoded and not rescaled. An empty or constant feature gets no odds ratio rather than a fake 1.0. Missing values are imputed inside the modeling pipeline. Use L2 regularization to reduce instability caused by correlated features.
 
 Minimum first-pass sample: 40 parsed win/loss matches with both classes.
 
@@ -299,6 +316,46 @@ Report coefficients/odds ratios as **associations**, not causal effects.
 ACS, KAST, DDΔ and similar end-of-match metrics are partly consequences of how the match unfolded. They are useful descriptors but cannot prove that deliberately maximizing the metric will cause a win.
 
 The AI prompt receives this warning explicitly.
+
+## 7.8 Recent against older, and "stuck"
+
+Split the matches into the last 20 (`RECENT_N`) and the older ones. Win rate for each side with its Wilson interval; every personal stat compared with the bootstrap of 7.6.
+
+Stuck rule: when the recent win-rate interval contains 50%, the player wins as much as they lose and sits at their current level. Climbing needs a win rate above 50%.
+
+## 7.9 Opening duels
+
+`opening duel win rate = FK / (FK + FD)`, pooled over matches, with its Wilson interval.
+
+## 7.10 Conditional win rate
+
+For each stat: win rate in matches where it is better than the player's own median, against matches where it is worse, each with a Wilson interval; the gap with the bootstrap of 7.6 on 0/1 results. The threshold is the player's own median, never an invented cut-off.
+
+## 7.11 Effect size — Cliff's delta
+
+`δ = 2U / (n_win · n_loss) − 1`, where `U` is the Mann–Whitney statistic: the share of win/loss pairs in which the stat is better in the win, rescaled to −1…+1. Unit-free, so stats with different units compare fairly. The Mann–Whitney p-value feeds 7.12.
+
+## 7.12 False-discovery control — Benjamini–Hochberg
+
+All comparisons (stats, maps, agents, roles, tilt, sessions) are adjusted together at a 5% false-discovery rate. This replaces the rough "expect one false positive in twenty" count.
+
+## 7.13 Trend — Theil–Sen slope and Mann–Kendall test
+
+Per stat over match order: the Theil–Sen slope (median of pairwise slopes, robust to outlier games) and the Mann–Kendall test (Kendall's tau against match order) for whether the trend is real. Rolling win rate: EWMA (7.5) on 0/1 results.
+
+## 7.14 Close games against stomps
+
+Round win % = rounds won ÷ rounds played, with a Wilson interval. Share of losses by 2 rounds or fewer (`CLOSE_MARGIN`). Descriptive only.
+
+## 7.15 Tilt and sessions
+
+- Tilt: win rate after a loss against after a win, and after 2 or more losses in a row (bootstrap of 7.6 on 0/1 results).
+- Sessions: matches less than 2 hours apart (`SESSION_GAP_HOURS`) form one sitting; win rate and ACS for games 1–2 against game 3 and later. Needs match times; with dates only the block is skipped with a reason.
+- Below about 50 matches both are marked insufficient, never guessed.
+
+## 7.16 Main weak point ranking
+
+Candidates: every personal stat including per-round rates (not TRS), weak maps, agents and roles (7.3), tilt and session fatigue (7.15). A candidate counts only if it survives Benjamini–Hochberg (7.12), points in the bad direction, and — for stats — its win/loss gap exceeds one MAD. Ranked by effect size (Cliff's delta; win-rate gap for groups, tilt and sessions); ties broken by a worsening trend (7.13). The first candidate is the program's own pick. An empty list is a valid result: nothing stands out from luck yet.
 
 ---
 
@@ -334,17 +391,19 @@ No cloud key is required.
 
 The model receives the final analysis JSON, not the raw scraped HTML/text.
 
-This minimizes hallucinations and forces the model to reason from already-computed evidence.
+This minimizes hallucinations and forces the model to reason from already-computed evidence. The model does not learn between runs: it reads the file fresh each time, so the file carries every result the report needs.
 
 ### 8.3 AI output contract
 
 The response must contain:
 
-1. **What the data actually says**
-2. **What is probably noise / uncertain**
-3. **Three coaching priorities**
-4. **Next 10-game experiment**
-5. **What extra data would unlock better coaching**
+1. **Your profile** — win rate overall and in the last 20 games, stuck or not, TRS level and trend, best and worst maps, agents and roles in the current pool, each with its uncertainty.
+2. **Your main issue** — the one `weak_points` candidate most tied to losses, with its numbers.
+3. **Why it keeps your rank stuck** — how it shows in losses and whether it is getting worse.
+4. **What is probably noise** — stats that look bad but could be luck.
+5. **Plan for the next 10–20 games** — one habit to change and the number to watch.
+
+The deterministic fallback follows the same five sections and uses `weak_points[0]` as the main issue.
 
 ### 8.4 Guardrails
 
@@ -355,7 +414,9 @@ The coach must:
 - explicitly respect confidence intervals/sample size;
 - avoid treating headshot percentage as a universal aim score;
 - avoid treating K/D as the objective;
-- recommend controlled experiments and data collection when evidence is weak.
+- recommend controlled experiments and data collection when evidence is weak;
+- pick the main issue only from the `weak_points` list; when the list is empty, say that nothing stands out from luck yet;
+- never read a TRS difference between wins and losses as a weakness, because TRS includes the result.
 
 ---
 
@@ -396,6 +457,8 @@ data/
 ```
 
 The separation allows every stage to be inspected independently.
+
+`analysis/Player_TAG.json` is versioned (`meta.version`, currently 1) and holds the blocks `meta`, `quality`, `profile`, `personal`, `opening_duels`, `games`, `tilt`, `sessions`, `pool`, `outliers`, `margins`, `model`, `comparisons`, `leakage_warning` and `weak_points`. The full list of fields is in the weak-points design, §5. It is overwritten on each run.
 
 ---
 
@@ -462,6 +525,7 @@ The release is acceptable when:
 - raw, clean, analysis and coaching files are generated from a public profile when Tracker's DOM is compatible;
 - missing values do not crash the statistical pipeline;
 - small samples display uncertainty rather than confident conclusions;
+- the analysis names a main weak point only when one survives false-discovery control, and says so plainly when none does;
 - the AI can be removed and the statistical report still remains useful;
 - if Ollama is unavailable, a deterministic fallback coaching report is generated;
 - no undocumented Tracker API or anti-bot bypass mechanism is used.
