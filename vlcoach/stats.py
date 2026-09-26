@@ -151,12 +151,24 @@ def ewma(xs, alpha=ALPHA):
 
 
 def bootstrap_diff(win_vals, loss_vals, n_boot=N_BOOT, seed=SEED):
-    """How much better is this metric in wins than in losses, and could it be luck?
+    """Tells how much better a stat is in your wins than in your losses, and whether that could be luck.
 
-    Returns the observed gap, a 95% interval around it, and `uncertain`, which is
-    True when that interval contains zero — meaning the gap may be noise and must
-    not be coached on. Returns None when either side has fewer than two matches.
-    Spec 7.6.
+    Example: ACS 250, 240, 260, 245 in four wins and 200, 210, 195, 205 in four
+    losses gives a gap of +46, likely between +38 and +55. The range stays above
+    zero, so the gap is real. With 250, 180, 300 in wins and 230, 190, 260 in
+    losses the gap is +17, but it could be anywhere from -47 to +80: that may be
+    luck, so "uncertain" is True and the coach must not build advice on it.
+
+    Used by: analyze(), as win_vs_loss[field] for ACS, ADR, KAST, DD-delta,
+    headshot %, opening balance (first kills minus first deaths), multikills,
+    K/D and ACS rank in team. analyze() then adds "signal": True only when the
+    gap is not uncertain and bigger than your usual match-to-match spread (MAD).
+
+    Detail: bootstrap of the difference in means, spec 7.6. Both groups are
+    redrawn at random 2000 times with a fixed seed, so the same data always
+    gives the same report; the interval is the middle 95% of the redrawn gaps.
+    Returns {"diff", "ci", "uncertain"}, or None when either side has fewer
+    than 2 matches.
     """
     wins = np.array(_vals(win_vals), float)
     losses = np.array(_vals(loss_vals), float)
