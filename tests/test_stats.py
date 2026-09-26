@@ -80,3 +80,64 @@ def test_logistic_fits_with_signal_and_missing_values():
 def test_logistic_uses_categoricals_at_100_rows():
     r = S.logistic(_rows(120, 60))
     assert r["categorical_used"] is True and any(k.startswith("map_") for k in r["odds_ratios"])
+
+
+def test_analyze_shape_and_small_sample():
+    quality = {"discovered": 4, "parsed": 4, "with_result": 4, "completeness": {}}
+    analysis = S.analyze(_rows(4, 3), quality)
+
+    assert set(analysis) == {
+        "quality", "leakage_warning", "winrate", "by_map", "by_agent", "form",
+        "outliers", "win_vs_loss", "comparisons", "margins", "model",
+    }
+    assert analysis["winrate"]["n"] == 4 and analysis["winrate"]["wins"] == 3
+    low, high = analysis["winrate"]["wilson"]
+    assert high - low > 0.5
+    assert analysis["model"]["skipped"]
+    assert analysis["leakage_warning"] == S.LEAKAGE_WARNING
+    assert analysis["by_map"]["Ascent"]["shrunk"] != analysis["by_map"]["Ascent"]["raw"]
+    assert set(analysis["form"]) == set(S.FORM_FIELDS)
+    assert {"ewma", "last", "mad"} <= set(analysis["form"]["acs"])
+    assert set(analysis["win_vs_loss"]) == set(S.DIFF_FIELDS)
+    assert analysis["comparisons"]["n"] >= 1
+    assert analysis["comparisons"]["expected_false_positives"] == analysis["comparisons"]["n"] / 20
+
+
+def test_analyze_signal_requires_clear_ci_and_mad():
+    rows = _rows(60, 30)
+    for row in rows:
+        row["round_diff"] = 6 if row["win"] else -4
+
+    analysis = S.analyze(
+        rows,
+        {"discovered": 60, "parsed": 60, "with_result": 60, "completeness": {}},
+    )
+    dd_delta = analysis["win_vs_loss"]["dd_delta"]
+
+    assert dd_delta["uncertain"] is False and dd_delta["signal"] is True
+    assert analysis["margins"] == {
+        "loss_median_round_diff": -4.0,
+        "win_median_round_diff": 6.0,
+        "acs_rank_in_team_median": None,
+    }
+    assert all(
+        not result["signal"]
+        for result in analysis["win_vs_loss"].values()
+        if result and result["uncertain"]
+    )
+
+
+def test_analyze_empty_rows_does_not_crash():
+    analysis = S.analyze(
+        [],
+        {"discovered": 0, "parsed": 0, "with_result": 0, "completeness": {}},
+    )
+
+    assert analysis["winrate"]["n"] == 0
+    assert analysis["winrate"]["wilson"] is None
+    assert analysis["model"]["skipped"]
+    assert analysis["margins"] == {
+        "loss_median_round_diff": None,
+        "win_median_round_diff": None,
+        "acs_rank_in_team_median": None,
+    }

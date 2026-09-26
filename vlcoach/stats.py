@@ -246,3 +246,103 @@ def logistic(rows):
         "categorical_used": use_categoricals,
         "odds_ratios": odds_ratios,
     }
+
+
+def analyze(rows, quality):
+    """Assemble the complete analysis contract consumed by the coach."""
+    scored_rows = [row for row in rows if row.get("win") is not None]
+    match_count = len(scored_rows)
+    wins = sum(row["win"] for row in scored_rows)
+    overall_rate = wins / match_count if match_count else None
+
+    analysis = {
+        "quality": quality,
+        "leakage_warning": LEAKAGE_WARNING,
+        "winrate": {
+            "n": match_count,
+            "wins": wins,
+            "p": overall_rate,
+            "wilson": wilson(wins, match_count),
+            "jeffreys": jeffreys(wins, match_count - wins) if match_count else None,
+        },
+        "by_map": {},
+        "by_agent": {},
+        "form": {},
+        "outliers": {},
+        "win_vs_loss": {},
+        "comparisons": {"n": 0, "expected_false_positives": 0.0},
+        "margins": {
+            "loss_median_round_diff": None,
+            "win_median_round_diff": None,
+            "acs_rank_in_team_median": None,
+        },
+    }
+
+    for group_name in ("map", "agent"):
+        groups = {}
+        for row in scored_rows:
+            group = row.get(group_name) or "unknown"
+            wins_in_group, rows_in_group = groups.setdefault(group, [0, 0])
+            groups[group] = [wins_in_group + row["win"], rows_in_group + 1]
+        analysis[f"by_{group_name}"] = {
+            group: {
+                "n": rows_in_group,
+                "wins": wins_in_group,
+                "raw": wins_in_group / rows_in_group,
+                "shrunk": shrink(wins_in_group, rows_in_group, overall_rate),
+            }
+            for group, (wins_in_group, rows_in_group) in groups.items()
+        }
+
+    for field in FORM_FIELDS:
+        series = [row.get(field) for row in rows]
+        smoothed = ewma(series)
+        analysis["form"][field] = {
+            "ewma": smoothed,
+            "last": next((value for value in reversed(smoothed) if value is not None), None),
+            "mad": _mad(series),
+        }
+        analysis["outliers"][field] = {"z": robust_z(series)}
+
+    for field in DIFF_FIELDS:
+        result = bootstrap_diff(
+            [row.get(field) for row in scored_rows if row["win"]],
+            [row.get(field) for row in scored_rows if not row["win"]],
+        )
+        if result is not None:
+            metric_mad = _mad([row.get(field) for row in scored_rows])
+            result["signal"] = (
+                not result["uncertain"]
+                and metric_mad is not None
+                and abs(result["diff"]) > metric_mad
+            )
+            analysis["comparisons"]["n"] += 1
+        analysis["win_vs_loss"][field] = result
+
+    analysis["comparisons"]["n"] += len(analysis["by_map"]) + len(analysis["by_agent"])
+    analysis["comparisons"]["expected_false_positives"] = analysis["comparisons"]["n"] / 20
+    analysis["margins"] = {
+        "loss_median_round_diff": _median(
+            [row.get("round_diff") for row in scored_rows if not row["win"]]
+        ),
+        "win_median_round_diff": _median(
+            [row.get("round_diff") for row in scored_rows if row["win"]]
+        ),
+        "acs_rank_in_team_median": _median(
+            [row.get("acs_rank_in_team") for row in rows]
+        ),
+    }
+    analysis["model"] = logistic(rows)
+    return analysis
+
+
+def _mad(xs):
+    """Return the median absolute deviation, or None without two values."""
+    values = _vals(xs)
+    return float(sps.median_abs_deviation(values)) if len(values) >= 2 else None
+
+
+def _median(xs):
+    """Return a median for present values, or None when there are none."""
+    values = _vals(xs)
+    return float(np.median(values)) if values else None

@@ -55,9 +55,9 @@ Legend: `[ ]` todo · `[x]` done · `[~]` in progress
 
 ## Task 5 — stats: analyze()
 
-- [ ] Tests — shape, small sample, signal needs CI and MAD, margins, empty rows — RED
-- [ ] `analyze` with `signal`, `comparisons`, `margins`, `form[*].mad` — GREEN
-- [ ] `HISTORY.md` entry, commit
+- [x] Tests — shape, small sample, signal needs CI and MAD, margins, empty rows — RED
+- [x] `analyze` with `signal`, `comparisons`, `margins`, `form[*].mad` — GREEN
+- [x] `HISTORY.md` entry, commit
 
 ## Task 6 — clean
 

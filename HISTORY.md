@@ -289,3 +289,18 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
 - Restart Claude Code or run `/reload-plugins` so ECC loads.
 - Mac: `uv tool install graphifyy`, `/graphify .`, `graphify hook install`; check that ECC is there.
 - Resume the stats.py review fixes.
+
+## 2026-09-26 17:26 — Task 5: stats analyze()
+
+**Changed**
+- `vlcoach/stats.py`: `analyze(rows, quality)` assembles the full analysis contract the coach
+  reads — winrate (Wilson + Jeffreys), `by_map`/`by_agent` with raw and shrunk rates, `form`
+  EWMA plus MAD, robust-z `outliers`, `win_vs_loss` bootstrap with the `signal` rule (CI clear
+  of zero AND `|diff|` > one MAD), `comparisons` count with expected false positives, round
+  `margins`, and the `model`. Added `_mad` and `_median` helpers.
+- `tests/test_stats.py`: 3 tests — shape and small sample, signal requires clear CI and MAD,
+  empty rows do not crash. `pytest tests/test_stats.py -q`: 12 passed.
+
+**Next**
+- Regularise Tasks 6–9 (clean, coach fallback, coach Ollama, cli) one at a time, each with its
+  ROADMAP tick, HISTORY entry and commit, after the owner's ok.
