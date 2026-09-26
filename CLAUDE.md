@@ -22,6 +22,16 @@ This file adds only what is specific to Claude Code, and must never contradict i
   installed at user scope; `/ponytail lite|full|ultra` sets the intensity, default `full`.
 - Plans in `docs/superpowers/plans/`, design specs in `docs/superpowers/specs/`.
 
+## Graphify
+- Graph rules are in `AGENTS.md` (Knowledge graph). This section adds the Claude Code side.
+- For a question that spans files, start with `graphify-out/GRAPH_REPORT.md` or `graphify query`.
+- First build on a machine: `/graphify .` from the repo root.
+- At the end of each task, after the `HISTORY.md` entry: run `graphify update .` if code changed,
+  and `/graphify . --update` if any document changed, `HISTORY.md` and `ROADMAP.md` included.
+  Only changed files are re-extracted, but each one costs LLM tokens.
+- Post-commit hook: `graphify hook install`, once per machine, after the install rule above. It
+  refreshes code only. Documents still need `/graphify . --update`.
+
 ## Environment
 - Windows venv is `.venv`, Mac venv is `.venv-mac`. Both git-ignored, each machine uses only
   its own. Python is 3.13 on the PC, 3.12 on the Mac.

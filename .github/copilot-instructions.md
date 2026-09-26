@@ -17,6 +17,7 @@
 - Review the change from a fresh perspective for regressions, fabricated data, uncertainty loss, and privacy issues.
 - Do not add dependencies when the standard library or an existing project dependency is sufficient.
 - Do not modify unrelated files or remove user changes.
+- For orientation across files, read `graphify-out/GRAPH_REPORT.md` when it exists. It is a derived, git-ignored graph: verify its claims against the code and the sources listed in `AGENTS.md`. After a code change, `graphify update .` refreshes it without an LLM.
 
 ## Dynamic workflow selection
 

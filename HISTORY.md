@@ -250,3 +250,25 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
 - Fix the three Important findings of the stats.py review (bootstrap minimum per side, one-hot
   columns scaled, OR = 1.0 on empty or constant features), brainstorming first since two of
   them change the plan.
+
+## 2026-09-26 15:36 — graphify knowledge graph and its rules
+
+**Changed**
+- graphify 0.9.63 (`uv tool`) built a graph of the repo in `graphify-out/`: 163 nodes, 351 edges,
+  10 communities, 90% EXTRACTED / 9% INFERRED. Code came from the AST pass (no LLM). Docs and the
+  logo came from LLM extraction (~222k input tokens). The `stats.py` functions link to their
+  spec §7 methods, and `riot_id()` links to the profile input.
+- `AGENTS.md`: new Knowledge graph section. The graph is for orientation only and owns no fact.
+  Rules: verify its claims against the canonical sources; after code changes run `graphify update .`;
+  after doc changes, re-extraction depends on the harness.
+- `CLAUDE.md`: Graphify section with the Claude Code side. `/graphify .` for a first build.
+  At the end of each task, after the `HISTORY.md` entry: `graphify update .` if code changed, and
+  `/graphify . --update` if any doc changed, `HISTORY.md` and `ROADMAP.md` included, so the graph
+  never lags the log. Each changed doc costs LLM tokens.
+- `.github/copilot-instructions.md`: one line to read `GRAPH_REPORT.md` for orientation and verify it.
+- `.gitignore`: `graphify-out/`. It holds a per-machine interpreter path and a rebuildable cache.
+- `ROADMAP.md` Phase 0: graphify line, in progress.
+
+**Next**
+- `graphify hook install` on the PC, then build on the Mac (`uv tool install graphifyy`, `/graphify .`).
+- Resume the stats.py review fixes.

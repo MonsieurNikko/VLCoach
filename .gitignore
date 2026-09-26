@@ -5,3 +5,4 @@ __pycache__/
 *.egg-info/
 tests/fixtures/*.html
 .DS_Store
+graphify-out/
