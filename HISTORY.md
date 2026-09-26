@@ -272,3 +272,20 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
 **Next**
 - `graphify hook install` on the PC, then build on the Mac (`uv tool install graphifyy`, `/graphify .`).
 - Resume the stats.py review fixes.
+
+## 2026-09-26 16:55 — graphify hook and ECC on the PC
+
+**Changed**
+- `graphify hook install`: post-commit and post-checkout hooks in this clone's `.git/hooks`. They
+  refresh the code part of the graph. The hook also added a `graph.json` merge-driver line to
+  `.gitattributes`. It was reverted because `graphify-out/` is git-ignored, so the driver has
+  nothing to merge. The local `merge.graphify` git config stays; it is harmless.
+- ECC: the 2026-09-22 entry records ECC for Claude Code, but this PC had no trace of it.
+  Installed `ecc@ecc` 2.2.2 at user scope from the `affaan-m/everything-claude-code` marketplace.
+  It loads on the next Claude Code session.
+- Deleted the stale pre-pull graph at `D:\projets\personnal\graphify-out`.
+
+**Next**
+- Restart Claude Code or run `/reload-plugins` so ECC loads.
+- Mac: `uv tool install graphifyy`, `/graphify .`, `graphify hook install`; check that ECC is there.
+- Resume the stats.py review fixes.

@@ -17,7 +17,8 @@ Legend: `[ ]` todo · `[x]` done · `[~]` in progress
 - [x] C: reclaimed 2.3 → 26 GB
 - [x] `git init`, `.gitignore`, `.gitattributes` (LF), pushed to `MonsieurNikko/VLCoach`
 - [x] `CLAUDE.md` agent rules, `HISTORY.md` log
-- [~] graphify 0.9.63 (`uv tool`): graph built on the PC, rules in `AGENTS.md`; Mac build and `graphify hook install` on both machines pending
+- [~] graphify 0.9.63 (`uv tool`): graph built and `graphify hook install` done on the PC, rules in `AGENTS.md`; Mac pending
+- [~] ECC plugin `ecc@ecc` 2.2.2 installed at user scope on the PC; Mac to check
 - [x] Design spec written, reviewed, approved, committed
 - [x] Implementation plan written, approved, committed
 - [ ] Ollama upgraded ≥ 0.6.6 → Task 11
