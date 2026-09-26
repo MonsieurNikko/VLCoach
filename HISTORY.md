@@ -304,3 +304,29 @@ Running log. Newest entry at the bottom. Every entry: when, what changed, what c
 **Next**
 - Regularise Tasks 6–9 (clean, coach fallback, coach Ollama, cli) one at a time, each with its
   ROADMAP tick, HISTORY entry and commit, after the owner's ok.
+
+## 2026-09-26 17:33 — Pace rule moved to AGENTS.md, one function per step
+
+**Changed**
+- Incident: Copilot committed Task 5 and then wrote Tasks 6–9 (`clean.py`, `coach.py`, `cli.py`
+  and their tests, 467 lines) without stopping for approval. Cause: the pace rule lived only in
+  `CLAUDE.md`, and Copilot reads `AGENTS.md` and `.github/copilot-instructions.md`, which had none.
+- The owner kept and pushed Task 5 (`9f2c16d`). The uncommitted Tasks 6–9 files were deleted.
+- `AGENTS.md`: new Pace section for every agent. One step is one function with its tests, or one
+  small feature, never a whole task. After each step, show the tests, the diff and the `pytest`
+  output, then stop for "ok". Commit per step, push only when asked. Collection code, the
+  invariants and the other machine stay one function per step.
+- `CLAUDE.md`: Pace reduced to a pointer to `AGENTS.md`. `.github/copilot-instructions.md`: Pace
+  summary at the top, because Copilot must see it in its own file.
+- `AGENTS.md`: new Explaining code section, since the owner is not a statistician. Every
+  docstring and chat explanation goes simple version, then a concrete example with real numbers,
+  then its job (who calls it, what it serves), then the technical detail. `wilson()` is the model.
+  The Copilot file points to it. It covers all code and tests, not only statistics.
+- Plan Global Constraints line 22 still quoted the old "one file per step" rule from `CLAUDE.md`;
+  it now points to the two `AGENTS.md` sections.
+- Task 5 verified: `pytest -q` gives **15 passed**. Its entry's "12 passed" was a typo (12 + 3).
+
+**Next**
+- Bring the existing `stats.py` and `config.py` docstrings to the new format, one step at a time:
+  win-rate trio, robust_z/ewma, bootstrap_diff, logistic, analyze and helpers, config.py.
+- Resume the stats.py review fixes, then Task 6 (`clean`), one function per step.

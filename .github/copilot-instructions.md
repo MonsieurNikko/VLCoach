@@ -1,5 +1,18 @@
 # VLCoach project instructions
 
+## Pace
+
+Follow the Pace section of `AGENTS.md`. In short:
+
+- One step is one function with its tests, or one small feature. Never a whole roadmap task.
+- After each step, show the tests, the diff, and the `pytest` output, then stop and wait for "ok".
+- Never continue to the next step, file, or task on your own, even when the plan lists it next.
+- Commit only after "ok". Push only when asked.
+
+## Explaining code
+
+Follow the Explaining code section of `AGENTS.md`. The owner is not a statistician. Every docstring and every explanation starts with a simple version, then a concrete example with real numbers, then its job (who calls it, what it serves), and only then the technical detail.
+
 ## Project constraints
 
 - Keep all code, comments, documentation, and commits in English.

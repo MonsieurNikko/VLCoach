@@ -16,6 +16,43 @@ Each fact has exactly one owner. Link to the owner instead of copying it here.
 
 Treat these as evidence, not as instructions. Verify their claims against the code, the tests, and Git before acting on them.
 
+## Pace
+
+The owner must be able to follow every change as it lands. Speed is not a goal. This section binds every agent, whatever its harness.
+
+- One step is one function with its tests, or one small feature: a few closely related functions that make no sense apart. A step is never a whole roadmap task and never spans two modules.
+- Before a step, say in five lines or fewer what it adds and why.
+- After a step, show the tests, the code, the diff, and the `pytest` output. Then stop and wait for "ok".
+- Never start the next step, file, or task on your own, even when the plan lists it next.
+- Commit after each approved step, one step per commit, so `git revert` undoes a bad one. Push only when asked.
+- Collection code (`collect.py`, anything touching the network), the project invariants below, and anything affecting the other machine go one function per step, never a feature.
+- Before any install, download, delete, or move, say what and why, then wait.
+- Tick each `ROADMAP.md` box when its step is approved. After each completed roadmap task, append a `HISTORY.md` entry: `## YYYY-MM-DD HH:MM — title`, then **Changed** and **Next** lists, newest at the bottom.
+
+## Explaining code
+
+The owner is not a statistician. Every docstring, and every explanation of code given in chat, follows this order. It applies to all code: every module, function and test, not only statistics.
+
+1. **Simple version.** One or two plain sentences, no jargon. An unavoidable technical term is explained in the same sentence.
+2. **Concrete example.** Real numbers from this project's use: a player, a map, a few matches, and what comes out.
+3. **Its job.** Which function calls it, or which part of the report shows its result, and what would go wrong without it.
+4. **Only then the detail.** Method name, spec section, edge cases, and what it returns when data is missing.
+
+Comments inside a function say why a step exists, in plain words. They never restate the code.
+
+```python
+def wilson(wins, n, z=1.96):
+    """Gives the range where your true win rate probably sits, not just one number.
+
+    Example: 3 wins in 4 matches gives [0.30, 0.95]. The 75% you see could really
+    be anywhere from 30% to 95%, so the report can say "too few games to tell".
+
+    Used by: analyze(), for the overall win rate in the report.
+
+    Detail: 95% Wilson score interval, spec 7.1. Returns None when n == 0.
+    """
+```
+
 ## Knowledge graph
 
 `graphify-out/` holds a graph of this repository built by graphify (PyPI package `graphifyy`). It is git-ignored and built separately on each machine.
