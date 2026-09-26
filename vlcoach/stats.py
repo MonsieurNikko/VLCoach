@@ -25,12 +25,17 @@ def _vals(xs):
 
 
 def wilson(wins, n, z=1.96):
-    """Where does the true win rate plausibly sit, given only n matches?
+    """Gives the range where your true win rate probably sits, not just one number.
 
-    Returns a 95% Wilson score interval as [low, high], or None when there is
-    nothing to measure. Wilson is used instead of the textbook formula because
-    it stays inside [0, 1] and behaves at 0 or 100% wins, which is the normal
-    case for a player with four games on a map. Spec 7.1.
+    Example: 3 wins in 4 matches gives [0.30, 0.95]. The 75% you see could really
+    be anywhere from 30% to 95%, so the report can say "too few games to tell".
+    With 30 wins in 40 matches the range tightens to [0.60, 0.86].
+
+    Used by: analyze(), for the overall win rate in the report. Without it the
+    report would show a bare 75% and overclaim on four games.
+
+    Detail: 95% Wilson score interval, spec 7.1. Chosen over the textbook formula
+    because it stays inside [0, 1] even at 0 or 100% wins. Returns None when n == 0.
     """
     if n == 0:
         return None
@@ -47,12 +52,18 @@ def wilson(wins, n, z=1.96):
 
 
 def jeffreys(wins, losses):
-    """Same question as wilson, answered the Bayesian way.
+    """Gives a best guess of your true win rate, plus its range, the Bayesian way.
 
-    Starts from Jeffreys' prior, Beta(0.5, 0.5), which barely assumes anything,
-    and updates it with the matches played. Returns the posterior mean and a 95%
-    credible interval. It never breaks on 0 wins or 0 losses, which is why it
-    sits next to wilson rather than replacing it. Spec 7.2.
+    Example: 3 wins and 1 loss gives a best guess of 0.70, range [0.28, 0.97].
+    0 wins and 4 losses still works: best guess 0.10, range [0.00, 0.44].
+
+    Used by: analyze(), next to wilson for the overall win rate. Wilson gives
+    only a range; this adds one best-guess number the coach can quote, and two
+    methods that agree make the report more trustworthy.
+
+    Detail: Beta posterior from Jeffreys' prior Beta(0.5, 0.5), which assumes
+    almost nothing before the first match. Returns the posterior mean and a 95%
+    credible interval, spec 7.2. Never breaks at 0 wins or 0 losses.
     """
     posterior = sps.beta(wins + 0.5, losses + 0.5)
     return {
@@ -62,11 +73,17 @@ def jeffreys(wins, losses):
 
 
 def shrink(wins_in_group, n_in_group, overall_rate, k=K):
-    """What win rate should we report for one map or agent, without overclaiming?
+    """Gives a fairer win rate for one map or agent you played only a few times.
 
-    A 3-0 record is not a 100% map. This pulls the group's rate toward the
-    player's overall rate by adding k imaginary matches played at that overall
-    rate. Small groups move a lot, large groups barely move. Spec 7.3.
+    Example: 3 wins in 3 matches on Ascent, overall win rate 50%. Raw says 100%;
+    shrink says 0.62. With 30 wins in 40 matches, raw 0.75 only moves to 0.70:
+    more games, more trust in the map's own record.
+
+    Used by: analyze(), as the "shrunk" value next to "raw" in by_map and
+    by_agent. Without it, a lucky 3-0 map would top the report as your best map.
+
+    Detail: empirical-Bayes shrinkage, spec 7.3. Adds k = 10 imaginary matches
+    played at your overall rate: (wins + k * overall) / (n + k).
     """
     return (wins_in_group + k * overall_rate) / (n_in_group + k)
 
