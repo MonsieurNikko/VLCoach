@@ -138,6 +138,8 @@ pytest
 
 ### Usage
 
+Planned: the `vlcoach` command needs `cli.py` (roadmap Task 9). Until then it fails with `ModuleNotFoundError`.
+
 ```bash
 vlcoach run     "Name#TAG" --matches 50 --model auto --lang en   # full pipeline
 vlcoach collect "Name#TAG" --matches 50 [--headed]               # scrape only

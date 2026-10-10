@@ -290,7 +290,21 @@ def logistic(rows):
 
 
 def analyze(rows, quality):
-    """Assemble the complete analysis contract consumed by the coach."""
+    """Runs every statistic on your matches and gathers the results in one dict.
+
+    Example: 30 matches, 16 wins, 12 on Ascent. Out comes your win rate 0.53 with
+    its range, Ascent's rate pulled toward 0.53, your recent ACS form, which stats
+    differ between wins and losses, your round margins, and the logistic model.
+
+    Used by: coach.py (planned), which only phrases what this dict holds. Without
+    it the report would have no computed evidence to stand on.
+
+    Detail: rows must be sorted oldest to newest; clean() guarantees it (plan
+    Task 6). Form, EWMA and "last" read that order and do not re-sort. Win-rate,
+    map, agent, win-vs-loss and margin stats use only rows with a known "win";
+    form, outliers and the ACS-rank median use every row. Empty input gives n = 0
+    and None everywhere. Keys are fixed by the plan's Task 5 contract.
+    """
     scored_rows = [row for row in rows if row.get("win") is not None]
     match_count = len(scored_rows)
     wins = sum(row["win"] for row in scored_rows)

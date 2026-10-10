@@ -497,7 +497,7 @@ Design/specification artifacts produced by the workflow should remain version-co
 ### Required project bootstrap and engineering behavior
 
 - Inspect the current machine/tooling state before development and identify missing requirements.
-- Install all dependencies and tools required by the project rather than asking the user to perform routine setup manually when the agent has terminal access.
+- Install all dependencies and tools required by the project when the agent has terminal access, after stating what and why and getting the owner's ok (`AGENTS.md`, Pace).
 - Create and use an isolated Python virtual environment for the project.
 - Install the project in that environment, install `D4Vinci/Scrapling` from https://github.com/D4Vinci/Scrapling, and install any additional Scrapling/runtime/browser dependencies that the chosen implementation requires.
 - When AI coaching is enabled, install/configure Ollama and select the best practical current local model for the NVIDIA GeForce RTX 4070 SUPER, install it if missing, benchmark/verify it on the actual machine, and confirm that it can be invoked locally before continuing.
