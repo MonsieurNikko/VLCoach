@@ -4,10 +4,13 @@
 
 Follow the Pace section of `AGENTS.md`. In short:
 
-- One step is one function with its tests, or one small feature. Never a whole roadmap task.
-- After each step, show the tests, the diff, and the `pytest` output, then stop and wait for "ok".
+- One step is one function with its tests, or one small feature. Never a whole roadmap task, never two modules.
+- Before a step, say in five lines or fewer what it adds and why.
+- Collection code, anything touching the network, and anything affecting the other machine: one function per step.
+- Before any install, download, delete, or move, say what and why, then wait.
+- After each step, show the tests, the code, the diff, and the `pytest` output, then stop and wait for "ok".
 - Never continue to the next step, file, or task on your own, even when the plan lists it next.
-- Commit only after "ok". Push only when asked.
+- Commit after each approved step, one step per commit. Push only when asked.
 
 ## Explaining code
 

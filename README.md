@@ -4,9 +4,9 @@
 
 ### From your own match history — no invented scores, no hidden uncertainty.
 
-[![Python](https://img.shields.io/badge/Python-3.13-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Status](https://img.shields.io/badge/status-work%20in%20progress-orange?style=for-the-badge)](ROADMAP.md)
-[![Tests](https://img.shields.io/badge/tests-6%20passing-brightgreen?style=for-the-badge&logo=pytest&logoColor=white)](tests/)
+[![Tests](https://img.shields.io/badge/tests-15%20passing-brightgreen?style=for-the-badge&logo=pytest&logoColor=white)](tests/)
 [![Local AI](https://img.shields.io/badge/AI-100%25%20local%20via%20Ollama-black?style=for-the-badge&logo=ollama&logoColor=white)](https://ollama.com/)
 [![Methodology](https://img.shields.io/badge/built%20with-Superpowers%20%2B%20Ponytail-8A2BE2?style=for-the-badge)](https://github.com/obra/superpowers)
 
@@ -74,7 +74,7 @@ flowchart LR
 
 Every stage reads only the previous stage's file. Re-run `analyze` or `coach` without touching the network. Raw snapshots are written **before** parsing, so a selector fix never needs a re-crawl.
 
-Six flat modules, four dependencies, everything else stdlib:
+Six flat modules once v0.2 is done (today only `config.py` and `stats.py` exist), four dependencies, everything else stdlib:
 
 ```
 vlcoach/
@@ -126,7 +126,7 @@ Per-machine user env vars, not project config: `PLAYWRIGHT_BROWSERS_PATH`, `OLLA
 <summary><b>macOS</b></summary>
 
 ```bash
-uv venv .venv-mac --python 3.13
+uv venv .venv-mac --python 3.12
 source .venv-mac/bin/activate
 uv pip install -e ".[dev]"
 scrapling install
@@ -173,7 +173,7 @@ No cloud key. Nothing leaves the machine.
 
 `https://tracker.gg/robots.txt` disallows `/*/profile/*` and `/*/matches/*`, and Tracker Network states it does not permit scraping. This tool requests those pages anyway — for **your own public profile only**, with a real headless Chromium, a fixed 3-second delay, and no stealth, proxy, CAPTCHA or fingerprint logic of any kind. It stops on the first block and never retries harder. Use it on your own data and accept that access may end at any time.
 
-Hard limits, enforced in code and in [`AGENTS.md`](AGENTS.md): `DynamicFetcher` in v0.2, fail closed, never fabricate a missing value, never infer a result the page did not state.
+Hard limits, set in [`AGENTS.md`](AGENTS.md) and enforced in `collect.py` once it exists: `DynamicFetcher` in v0.2, fail closed, never fabricate a missing value, never infer a result the page did not state.
 
 ---
 
@@ -185,7 +185,7 @@ Built test-first, one module at a time, following the [Superpowers](https://gith
 - [x] `config` — field table, Riot ID parsing
 - [x] `stats` — Wilson, Jeffreys, shrinkage
 - [x] `stats` — robust z, EWMA, bootstrap, logistic, `analyze()`
-- [ ] `stats` — main weak point: per-round rates, opening duels, stronger loss evidence, trends, tilt, sessions, ranking (design done)
+- [ ] `stats` — main weak point: per-round rates, opening duels, stronger loss evidence, trends, tilt, sessions, ranking (design written, awaiting owner review)
 - [ ] `clean`, `coach`, `cli`
 - [ ] `collect` — live scraping against fixtures
 - [ ] Ollama upgrade, model measurement
