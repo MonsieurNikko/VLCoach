@@ -33,6 +33,9 @@ FIELDS = {
     "rr_change": (int, None, None),    # optional, only when the page shows it
 }
 CONTEXT = ("match_id", "url", "timestamp", "map", "agent", "result", "score_a", "score_b", "lobby_rank")
+# Computed by clean(), never scraped: win (1/0 from result), opening_balance (fk - fd),
+# round_diff (score_a - score_b). stats reads them under exactly these names.
+DERIVED = ("win", "opening_balance", "round_diff")
 MODEL_FEATURES = ("dd_delta", "kast_pct", "acs", "opening_balance", "hs_pct")  # continuous, spec 7.7
 MODEL_CATEGORICAL = ("map", "agent")
 FORM_FIELDS = ("acs", "adr", "kast_pct", "dd_delta")
