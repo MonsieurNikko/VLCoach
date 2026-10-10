@@ -70,6 +70,12 @@ def test_logistic_skips_small_or_single_class():
     assert S.logistic([])["skipped"]
 
 
+def test_logistic_skips_when_one_outcome_is_rare():
+    # 39 wins and 1 loss: any odds ratio would describe that single loss, not a pattern.
+    assert S.logistic(_rows(40, 39))["skipped"] == "need 5 wins and 5 losses, have 39 and 1"
+    assert S.logistic(_rows(40, 35))["skipped"] is None
+
+
 def test_logistic_fits_with_signal_and_missing_values():
     r = S.logistic(_rows(60, 30))
     assert r["skipped"] is None and r["auc"] > 0.8 and r["auc_std"] >= 0

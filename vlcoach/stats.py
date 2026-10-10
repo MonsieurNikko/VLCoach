@@ -224,6 +224,10 @@ def logistic(rows):
         return {**nothing_fitted, "skipped": f"need {MIN_MODEL_ROWS} rows with a result, have {len(won)}"}
     if len(set(won)) < 2:
         return {**nothing_fitted, "skipped": "only one class present"}
+    # With fewer than 5 of one outcome, the odds ratios describe those few
+    # matches, not a pattern; 5 also gives every CV fold one of each.
+    if min(won.count(1), won.count(0)) < 5:
+        return {**nothing_fitted, "skipped": f"need 5 wins and 5 losses, have {won.count(1)} and {won.count(0)}"}
 
     # Imported here rather than at module level: sklearn is slow to import, and
     # every other function in this file works without it.
@@ -260,17 +264,14 @@ def logistic(rows):
         LogisticRegression(l1_ratio=0, max_iter=1000),   # l1_ratio=0 means pure L2
     )
 
-    # Score the model on data it did not train on. Never more folds than the
-    # rarer outcome has matches, otherwise a fold could end up with one class.
-    folds = min(5, won.count(0), won.count(1))
-    auc = auc_std = None
-    if folds >= 2:
-        scores = cross_val_score(
-            model, features, won,
-            cv=StratifiedKFold(folds, shuffle=True, random_state=SEED),
-            scoring="roc_auc",
-        )
-        auc, auc_std = float(scores.mean()), float(scores.std())
+    # Score the model on data it did not train on. Five folds is safe: the check
+    # above guarantees each outcome has at least five matches to spread.
+    scores = cross_val_score(
+        model, features, won,
+        cv=StratifiedKFold(5, shuffle=True, random_state=SEED),
+        scoring="roc_auc",
+    )
+    auc, auc_std = float(scores.mean()), float(scores.std())
 
     # Refit on everything to report the coefficients themselves.
     model.fit(features, won)
